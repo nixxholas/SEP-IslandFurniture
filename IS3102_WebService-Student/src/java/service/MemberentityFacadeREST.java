@@ -92,7 +92,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response loginMember(@QueryParam("email") String email, @QueryParam("password") String password) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?zeroDateTimeBehavior=convertToNull&user=root&password=12345");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=290597");
             String stmt = "SELECT * FROM memberentity m WHERE m.EMAIL=?";
             PreparedStatement ps = conn.prepareStatement(stmt);
             ps.setString(1, email);

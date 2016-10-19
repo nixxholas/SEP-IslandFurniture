@@ -34,27 +34,29 @@
                             <ul class="products product-thumb-info-list" data-plugin-masonry>
                                 <%
                                     try {
+                                        for (RetailProduct r : retailProducts) {
                                 %>
                                 <li class="col-md-3 col-sm-6 col-xs-12 product">
                                     <span class="product-thumb-info">
                                         <span class="product-thumb-info-image">
-                                            <img alt="" class="img-responsive" src="../../..<%=retailProducts.get(0).getImageUrl()%>">
+                                            <img alt="" class="img-responsive" src="../../..<%=r.getImageUrl()%>">
                                         </span>
                                         <span class="product-thumb-info-content">
-                                            <h4><%=retailProducts.get(0).getName()%></h4>
+                                            <h4><%=r.getName()%></h4>
                                             <%
-                                                String normalPrice = "$" + retailProducts.get(0).getPrice() + "0";
+                                                String normalPrice = "$" + r.getPrice() + "0";
                                             %>
                                             <span class="product-thumb-info-act-left"><em>Price: <%=normalPrice%></em></span>
                                             <br/>
                                             <form action="retailProductDetails.jsp">
-                                                <input type="hidden" name="sku" value="<%=retailProducts.get(0).getSKU()%>"/>
+                                                <input type="hidden" name="sku" value="<%=r.getSKU()%>"/>
                                                 <input type="submit" class="btn btn-primary btn-block" value="More Details"/>
                                             </form>
                                         </span>
                                     </span>
                                 </li>
                                 <%
+                                    }
                                     } catch (Exception ex) {
                                         System.out.println(ex);
                                     }
