@@ -1,19 +1,20 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package B_servlets;
 
-import CorporateManagement.FacilityManagement.FacilityManagementBeanLocal;
-import EntityManager.CountryEntity;
-import OperationalCRM.LoyaltyAndRewards.LoyaltyAndRewardsBeanLocal;
-import EntityManager.LoyaltyTierEntity;
+import HelperClasses.Member;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.ejb.EJB;
+import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
@@ -21,59 +22,53 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-public class ECommerce_MemberLoginServlet extends HttpServlet {
+/**
+ *
+ * @author nixho
+ */
+@WebServlet(name = "ECommerce_GetMember", urlPatterns = {"/ECommerce_GetMember"})
+public class ECommerce_GetMember extends HttpServlet {
 
-    @EJB
-    private FacilityManagementBeanLocal facilityManagementBean;
-
-    private String result;
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
+                  
         try {
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-            Cookie cookie = new Cookie("memberId", email);
-            cookie.setMaxAge(60 * 60); // 1 hour
-            response.addCookie(cookie);
+            Member member = retrieveMember((String) session.getAttribute("memberEmail"));
+            
+            // Member Details for Session
+            session.setAttribute("member", member);
 
-            HttpSession session = request.getSession();
+            session.setAttribute("memberName", member.getName());
+            
+            //  RequestDispatcher rd = request.getRequestDispatcher("/IS3102_Project-war/B/SG/memberProfile.jsp");
+            //  rd.forward(request, response);
 
-            /**
-             * This will invoke loginMember which would in turn
-             * communicate with the relevant REST API to authenticate the
-             * credentials that is given.
-             * 
-             * if the String is null, it'll be a false authentication 
-             * request
-             * else the user has entered proper credentials.
-             */
-            String memberEmail = loginMember(email, password);
-
-            if (memberEmail != null) {
-                List<CountryEntity> countries = facilityManagementBean.getListOfCountries();
-                session.setAttribute("countries", countries);
-
-                session.setAttribute("memberEmail", memberEmail);
-                response.sendRedirect("ECommerce_GetMember");
-            } else {
-                result = "Login fail. Username or password is wrong or account is not activated.";
-                response.sendRedirect("/IS3102_Project-war/B/SG/memberLogin.jsp?errMsg=" + result);
-            }
-
+            response.sendRedirect("/IS3102_Project-war/B/SG/memberProfile.jsp");
+        } catch (NoResultException ex) {
+            out.println("Failed to find member.");
         } catch (Exception ex) {
-            out.println(ex);
+            out.println("\nServer failed to getMemberByEmail:\n" + ex);
             ex.printStackTrace();
         }
     }
-
-    public String loginMember(String email, String password) {
+    
+    public Member retrieveMember(String email) {
         Client client = ClientBuilder.newClient();
         WebTarget target = client
-                .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.memberentity").path("login")
-                .queryParam("email", email)
-                .queryParam("password", password);
+                .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.memberentity").path("getmember")
+                .queryParam("email", email);
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
         System.out.println("status: " + response.getStatus());
@@ -82,10 +77,10 @@ public class ECommerce_MemberLoginServlet extends HttpServlet {
             return null;
         }
 
-        email = response.readEntity(String.class);
-        return email;
+        Member member = response.readEntity(Member.class);
+        return member;
     }
-
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
