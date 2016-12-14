@@ -35,11 +35,20 @@ public class ECommerce_MemberLoginServlet extends HttpServlet {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             Cookie cookie = new Cookie("memberId", email);
-            cookie.setMaxAge(60 * 60); //1 hour
+            cookie.setMaxAge(60 * 60); // 1 hour
             response.addCookie(cookie);
 
             HttpSession session = request.getSession();
 
+            /**
+             * This will invoke loginMember which would in turn
+             * communicate with the relevant REST API to authenticate the
+             * credentials that is given.
+             * 
+             * if the String is null, it'll be a false authentication 
+             * request
+             * else the user has entered proper credentials.
+             */
             String memberEmail = loginMember(email, password);
 
             if (memberEmail != null) {
