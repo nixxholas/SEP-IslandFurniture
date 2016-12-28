@@ -80,10 +80,10 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response updateMember(Member member, @QueryParam("password") String password) {
         try {            
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=290597");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
             
             if (password != null) {
-                String passStmt = "SELECT * FROM memberentity m WHERE m.EMAIL=?";
+                String passStmt = "SELECT PASSWORDSALT FROM memberentity m WHERE m.EMAIL=?";
                 PreparedStatement passPs = conn.prepareStatement(passStmt);
                 passPs.setString(1, member.getEmail());
                 ResultSet rs = passPs.executeQuery();
@@ -145,7 +145,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response getMember(@QueryParam("email") String email) {
     try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=290597");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
             String stmt = "SELECT * FROM Memberentity m WHERE m.EMAIL=?";
             PreparedStatement ps = conn.prepareStatement(stmt);
             ps.setString(1, email);
@@ -211,7 +211,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response loginMember(@QueryParam("email") String email, @QueryParam("password") String password) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=290597");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
             String stmt = "SELECT * FROM memberentity m WHERE m.EMAIL=?";
             PreparedStatement ps = conn.prepareStatement(stmt);
             ps.setString(1, email);
