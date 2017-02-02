@@ -9,6 +9,7 @@ import HelperClasses.Member;
 import HelperClasses.ShoppingCartLineItem;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -53,6 +54,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
             // stock first.
             if (itemIsAvailable(sku)) {
                 //out.println("Item is in stock");
+                ArrayList<ShoppingCartLineItem> shoppingCart;
                 
                 // We'll have to add the item to the user's cart now.
                 String memberEmail = (String) session.getAttribute("memberEmail");
@@ -65,9 +67,28 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 item.setName(request.getParameter("name"));
                 item.setImageURL(request.getParameter("imageURL"));
                 
-                // Check the Cart to see if it exists
+                // Check the Cart to see if it (both the cart and the item) exists
+                if (session.getAttribute("shoppingCart") != null) {
+                    // Since the shopping cart exists
+                    shoppingCart = (ArrayList<ShoppingCartLineItem>) session.getAttribute("shoppingCart");
+                    
+                    // Self explanatory code
+                    for (ShoppingCartLineItem i : shoppingCart) {
+                        if (i.equals(item)) {
+                            i.setQuantity(i.getQuantity() + 1);
+                        }
+                    }
+                } else {
+                    // Create the shopping cart
+                    shoppingCart = new ArrayList();
+                    
+                    // Simply add the item to the shopping cart since this is
+                    // the first item
+                    shoppingCart.add(item);
+                }
                 
                 // Redirect the user to the cart and display success
+                
             } else {
                 // Since there isn't any stocks left available, send the user
                 // back.
