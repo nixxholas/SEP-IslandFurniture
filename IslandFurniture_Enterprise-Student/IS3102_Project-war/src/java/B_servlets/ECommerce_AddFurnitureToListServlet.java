@@ -87,8 +87,11 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                     shoppingCart.add(item);
                 }
                 
-                // Redirect the user to the cart and display success
+                // Remember to return the cart
+                session.setAttribute("shoppingCart", shoppingCart);
                 
+                // Redirect the user to the cart and display success
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp");
             } else {
                 // Since there isn't any stocks left available, send the user
                 // back.
