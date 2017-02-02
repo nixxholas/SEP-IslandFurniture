@@ -49,6 +49,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         //out.println(session.getAttribute("memberEmail"));
         try {
             String sku = (String) request.getParameter("SKU");
+            String category = (String) session.getAttribute("cat");
             //out.println(id);
             
             // Before we add anything to the user's cart, we'll check for the
@@ -99,15 +100,14 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 // back.
                 //out.println("Something happened: " + itemIsAvailable(id,sku));
                 
-                String category = (String) session.getAttribute("cat");
-                
                 response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
-                    + "?cat=" + URLEncoder.encode(category)
+                    + "?cat=" + URLEncoder.encode(category, "UTF=8")
                     + "&errMsg=There aren't any stocks left");
             }
         } catch (Exception ex) {
             // out.println(ex.toString());
             response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
+                    + "?cat=" + URLEncoder.encode(category, "UTF-8")
                     + "?errMsg=" + ex.toString());
         }
     }
