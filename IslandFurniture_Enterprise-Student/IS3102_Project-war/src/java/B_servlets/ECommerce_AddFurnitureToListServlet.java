@@ -6,6 +6,7 @@
 package B_servlets;
 
 import HelperClasses.Member;
+import HelperClasses.ShoppingCartLineItem;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -45,38 +46,63 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         
         //out.println(session.getAttribute("memberEmail"));
         try {
-            long id = Long.parseLong(request.getParameter("id"));
             String sku = (String) request.getParameter("SKU");
-            double price = Double.parseDouble(request.getParameter("price"));
-            String name = (String) request.getParameter("name");
-            String imageURL = (String) request.getParameter("imageURL");
             //out.println(id);
             
             // Before we add anything to the user's cart, we'll check for the
             // stock first.
-            if (itemIsAvailable(id, sku)) {
-                out.println("Item is in stock");
+            if (itemIsAvailable(sku)) {
+                //out.println("Item is in stock");
+                
+                // We'll have to add the item to the user's cart now.
                 String memberEmail = (String) session.getAttribute("memberEmail");
+                
+                // Create the item
+                ShoppingCartLineItem item = new ShoppingCartLineItem();
+                item.setId(request.getParameter("id"));
+                item.setSKU(sku);
+                item.setPrice(Double.parseDouble(request.getParameter("price")));
+                item.setName(request.getParameter("name"));
+                item.setImageURL(request.getParameter("imageURL"));
+                
+                // Check the Cart to see if it exists
+                
+                // Redirect the user to the cart and display success
             } else {
                 // Since there isn't any stocks left available, send the user
                 // back.
-                out.println("Something happened: " + itemIsAvailable(id,sku));
+                //out.println("Something happened: " + itemIsAvailable(id,sku));
+                
+                String category = (String) session.getAttribute("cat");
             }
         } catch (Exception ex) {
             out.println(ex.toString());
         }
     }
     
-    public boolean itemIsAvailable(long id, String sku) {
+    /**
+     * itemIsAvailable, devised to check for the stock amounts relevant to
+     * the ECommerce Store
+     * 
+     * In this instance, storeID is not required due to the fact that this is
+     * only used for the ECommerce Store entity.
+     * 
+     * @param sku
+     * This is the product's UID.
+     * @return 
+     */
+    public boolean itemIsAvailable(String sku) {
         Client client = ClientBuilder.newClient();
         WebTarget target = client
-                .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.storeentity").path("getQuantity")
-                .queryParam("storeID", id)
+                .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.storeentity")
+                .path("getQuantity")
+                .queryParam("storeID", 10001)
                 .queryParam("SKU", sku);
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
         
-        int qty = (Integer) response.getEntity();
+        String qtyStr = response.readEntity(String.class);
+        int qty = Integer.parseInt(qtyStr);
         //System.out.println("status: " + response.getStatus());
         return qty > 0;
     }
