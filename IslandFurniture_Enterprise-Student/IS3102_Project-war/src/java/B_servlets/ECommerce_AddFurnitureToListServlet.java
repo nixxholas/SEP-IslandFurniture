@@ -46,10 +46,19 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
         
+        String category = (String) session.getAttribute("cat");
+        if (category.equals("") || category == null) {
+            out.println("Invalid Category.");
+        }
+        
         //out.println(session.getAttribute("memberEmail"));
         try {
+            if (request.getParameter("SKU").equals("")) {
+                response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
+                    + "?cat=" + URLEncoder.encode(category, "UTF=8")
+                    + "&errMsg=Invalid SKU Code.");
+            } 
             String sku = (String) request.getParameter("SKU");
-            String category = (String) session.getAttribute("cat");
             //out.println(id);
             
             // Before we add anything to the user's cart, we'll check for the
@@ -104,7 +113,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                     + "?cat=" + URLEncoder.encode(category, "UTF=8")
                     + "&errMsg=There aren't any stocks left");
             }
-        } catch (Exception ex) {
+        } catch (IOException | NumberFormatException ex) {
             // out.println(ex.toString());
             response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
                     + "?cat=" + URLEncoder.encode(category, "UTF-8")
