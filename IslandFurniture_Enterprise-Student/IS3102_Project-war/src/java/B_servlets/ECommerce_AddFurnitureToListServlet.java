@@ -57,7 +57,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 ArrayList<ShoppingCartLineItem> shoppingCart;
                 
                 // We'll have to add the item to the user's cart now.
-                String memberEmail = (String) session.getAttribute("memberEmail");
+                //String memberEmail = (String) session.getAttribute("memberEmail");
                 
                 // Create the item
                 ShoppingCartLineItem item = new ShoppingCartLineItem();
@@ -91,7 +91,8 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 session.setAttribute("shoppingCart", shoppingCart);
                 
                 // Redirect the user to the cart and display success
-                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp");
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?goodMsg=" + item.getName() + " added successfully to your cart.");
             } else {
                 // Since there isn't any stocks left available, send the user
                 // back.
