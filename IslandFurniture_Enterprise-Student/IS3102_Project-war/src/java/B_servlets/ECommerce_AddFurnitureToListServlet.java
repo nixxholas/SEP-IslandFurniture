@@ -47,7 +47,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         String category = (String) session.getAttribute("cat");
-        if (category.equals("") || category == null) {
+        if (category.equals("")) {
             out.println("Invalid Category.");
         }
         
