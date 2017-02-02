@@ -9,6 +9,7 @@ import HelperClasses.Member;
 import HelperClasses.ShoppingCartLineItem;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -99,9 +100,15 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 //out.println("Something happened: " + itemIsAvailable(id,sku));
                 
                 String category = (String) session.getAttribute("cat");
+                
+                response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
+                    + "?cat=" + URLEncoder.encode(category)
+                    + "&errMsg=There aren't any stocks left");
             }
         } catch (Exception ex) {
-            out.println(ex.toString());
+            // out.println(ex.toString());
+            response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
+                    + "?errMsg=" + ex.toString());
         }
     }
     
