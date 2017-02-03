@@ -24,7 +24,7 @@
 
 %>
 
-<%    List<MessageInboxEntity> listOfInboxMsg = (List<MessageInboxEntity>) session.getAttribute("inboxMessages");
+<%    //List<MessageInboxEntity> listOfInboxMsg = (List<MessageInboxEntity>) session.getAttribute("inboxMessages");
     /*  MessageInboxEntity msg = new MessageInboxEntity();
      msg.setId(1L);
      msg.setMessage("helloooooooo how are you?");

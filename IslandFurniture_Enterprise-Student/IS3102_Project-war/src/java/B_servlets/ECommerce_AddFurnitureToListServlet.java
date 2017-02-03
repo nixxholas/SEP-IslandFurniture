@@ -47,9 +47,6 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         String category = (String) session.getAttribute("cat");
-        if (category.equals("")) {
-            out.println("Invalid Category.");
-        }
         
         //out.println(session.getAttribute("memberEmail"));
         try {
@@ -95,6 +92,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                     
                     // Simply add the item to the shopping cart since this is
                     // the first item
+                    item.setQuantity(1);
                     shoppingCart.add(item);
                 }
                 
@@ -109,7 +107,11 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 // back.
                 //out.println("Something happened: " + itemIsAvailable(id,sku));
                 
+                // Encoding URLs the new way
+                // http://stackoverflow.com/questions/10786042/java-url-encoding-of-query-string-parameters
                 response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
+                    // When we need to include more than one parameter in the URL
+                    // https://coderanch.com/t/289258/java/passing-variables-response-sendRedirect
                     + "?cat=" + URLEncoder.encode(category, "UTF=8")
                     + "&errMsg=There aren't any stocks left");
             }
