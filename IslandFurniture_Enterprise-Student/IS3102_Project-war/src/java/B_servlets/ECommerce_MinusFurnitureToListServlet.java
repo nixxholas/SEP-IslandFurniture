@@ -55,7 +55,8 @@ public class ECommerce_MinusFurnitureToListServlet extends HttpServlet {
                     
                     for (ShoppingCartLineItem i : shoppingCart) {
                         if (i.getSKU().equals(sku)) {
-                            if (i.getQuantity() == 0) {
+                            if (i.getQuantity() == 1) {
+                                item.setName(i.getName()); // Need this for Message
                                 shoppingCart.remove(i);
                                 break;
                             }
