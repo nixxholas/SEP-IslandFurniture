@@ -36,16 +36,20 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
         
+        // For Debugging Purposes
+        //out.println(request.getParameterValues("delete").length);
+        
         try {
             // Retrieve the checkbox data first
             // http://stackoverflow.com/questions/10136062/get-selected-rows-from-a-html-table-using-servlets-and-jsp
-            String[] selected = request.getParameterValues("delete[]");
+            String[] selected = request.getParameterValues("delete");
             
             // For Debugging Purposes.
             // Gotta know what these strings store
-            for (String s : selected) {
-                out.println(s);
-            }
+            // for (String s : selected) {
+            //     out.println(s);
+            // }
+            
         } catch (Exception ex) {
             
         }
