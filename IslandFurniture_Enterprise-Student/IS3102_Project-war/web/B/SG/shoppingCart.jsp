@@ -182,8 +182,8 @@
                                                                 Total: 
                                                             </td>
                                                             <td class="product-subtotal">
-                                                                $<span class="amount" id="finalPrice" name="finalPrice">
-                                                                    
+                                                                $<span class="amount" id="finalPrice" name="finalPrice" >
+                                                                   <%=finalPrice%>
                                                                 </span>
                                                             </td>
                                                         </tr>
