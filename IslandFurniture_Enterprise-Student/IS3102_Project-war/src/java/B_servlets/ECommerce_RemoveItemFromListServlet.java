@@ -61,6 +61,10 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
                         session.getAttribute("shoppingCart");
                 
                 // Self Explanatory Checks and deletion of item.
+                
+                // This code causes ConcurrentModificationException
+                // Thorough Explanation on the exception here:
+                // http://stackoverflow.com/questions/13807092/error-java-util-concurrentmodificationexception
                 // for (ShoppingCartLineItem i : shoppingCart) {
                 //    for (String s : selected) {
                 //        if (s.equals(i.getSKU())) {
@@ -68,12 +72,21 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
                 //        }
                 //    }
                 // }
-                for (String sku : selected) {
-                    for (ShoppingCartLineItem item : shoppingCart) {
-                        if (item.getSKU().equals(sku)) {
-                            shoppingCart.remove(item);
+                
+                // Instead, we loop and add whatever we want to delete first
+                ArrayList<ShoppingCartLineItem> cartItemsToDelete = 
+                        new ArrayList();
+                
+                for (ShoppingCartLineItem i : shoppingCart) {
+                    for (String s : selected) {
+                        if (s.equals(i.getSKU())) {
+                           cartItemsToDelete.add(i);
                         }
                     }
+                }
+                
+                for (ShoppingCartLineItem i : cartItemsToDelete) {
+                    shoppingCart.remove(i);
                 }
                 
                 // Remember to return the cart
