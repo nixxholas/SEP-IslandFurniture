@@ -5,8 +5,10 @@
  */
 package B_servlets;
 
+import HelperClasses.ShoppingCartLineItem;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -50,8 +52,37 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
             //     out.println(s);
             // }
             
+            // We'll first have to retrieve the cart and check it through
+            ArrayList<ShoppingCartLineItem> shoppingCart;
+                
+            if (session.getAttribute("shoppingCart") != null) {
+                // Since the shopping cart exists,
+                shoppingCart = (ArrayList<ShoppingCartLineItem>) 
+                        session.getAttribute("shoppingCart");
+                
+                // Self Explanatory Checks and deletion of item.
+                for (ShoppingCartLineItem i : shoppingCart) {
+                    for (String s : selected) {
+                        if (s.equals(i.getSKU())) {
+                            shoppingCart.remove(i);
+                        }
+                    }
+                }
+                
+                // Remember to return the cart
+                session.setAttribute("shoppingCart", shoppingCart);
+                
+                // Redirect the user and return a success message
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?goodMsg=The selected items have been removed.");
+            } else {
+                // Redirect the user and return an error message
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?errMsg=There is nothing in the cart.");
+            }
         } catch (Exception ex) {
-            
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?errMsg=" + ex.toString());
         }
     }
 

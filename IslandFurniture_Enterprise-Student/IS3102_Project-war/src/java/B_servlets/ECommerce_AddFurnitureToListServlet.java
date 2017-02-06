@@ -84,7 +84,17 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                     for (ShoppingCartLineItem i : shoppingCart) {
                         if (i.equals(item)) {
                             i.setQuantity(i.getQuantity() + 1);
+                            break;
                         }
+                    }
+                    
+                    // If things end up here it means that the arraylist already
+                    // existed but the code wasn't capable of handling it
+                    
+                    // Basically just toss the item in
+                    if (shoppingCart.isEmpty()) {
+                        item.setQuantity(1);
+                        shoppingCart.add(item);
                     }
                 } else {
                     // Create the shopping cart
