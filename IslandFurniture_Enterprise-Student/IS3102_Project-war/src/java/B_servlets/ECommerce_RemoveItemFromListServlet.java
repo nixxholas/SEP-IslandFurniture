@@ -61,10 +61,17 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
                         session.getAttribute("shoppingCart");
                 
                 // Self Explanatory Checks and deletion of item.
-                for (ShoppingCartLineItem i : shoppingCart) {
-                    for (String s : selected) {
-                        if (s.equals(i.getSKU())) {
-                            shoppingCart.remove(i);
+                // for (ShoppingCartLineItem i : shoppingCart) {
+                //    for (String s : selected) {
+                //        if (s.equals(i.getSKU())) {
+                //            shoppingCart.remove(i);
+                //        }
+                //    }
+                // }
+                for (String sku : selected) {
+                    for (ShoppingCartLineItem item : shoppingCart) {
+                        if (item.getSKU().equals(sku)) {
+                            shoppingCart.remove(item);
                         }
                     }
                 }
