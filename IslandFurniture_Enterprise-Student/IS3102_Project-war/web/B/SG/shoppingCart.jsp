@@ -183,7 +183,7 @@
                                                                 Total: 
                                                             </td>
                                                             <td class="product-subtotal">
-                                                                $<span class="amount" id="finalPrice" name="finalPrice" >
+                                                                $<span class="amount" id="finalPrice" name="finalPrice" value="<%=finalPrice%>">
                                                                    <%=finalPrice%>
                                                                 </span>
                                                             </td>
@@ -213,7 +213,7 @@
                                                                 <label>Name on Card: </label>
                                                             </td>
                                                             <td style="padding: 5px">
-                                                                <input type="text" class="input-text text" title="name"id="txtName" required>                                                            
+                                                                <input type="text" class="input-text text" title="name" name="txtName" required>                                                            
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -221,7 +221,7 @@
                                                                 <label>Card Number: </label>
                                                             </td>
                                                             <td style="padding: 5px">
-                                                                <input type="text" class="input-text text " title="cardno" id="txtCardNo" required>
+                                                                <input type="text" class="input-text text " title="cardno" name="txtCardNo" required>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -229,7 +229,7 @@
                                                                 <label>CVV/CVC2: </label>
                                                             </td>
                                                             <td style="padding: 5px">
-                                                                <input type="text" class="input-text text " title="securitycode" id="txtSecuritycode" required>
+                                                                <input type="text" class="input-text text " title="securitycode" name="txtSecuritycode" required>
                                                             </td>
                                                         </tr>
 
@@ -238,21 +238,21 @@
                                                                 <label>Expiry Date: </label>
                                                             </td>
                                                             <td style="width: 300px">
-                                                                <select style="width: 120px; display: inline-block" class="dropdown-header" title="Month">
-                                                                    <option>January</option>
-                                                                    <option>February</option>
-                                                                    <option>March</option>
-                                                                    <option>April</option>
-                                                                    <option>May</option>
-                                                                    <option>June</option>
-                                                                    <option>July</option>
-                                                                    <option>August</option>
-                                                                    <option>September</option>
-                                                                    <option>October</option>
-                                                                    <option>November</option>
-                                                                    <option>December</option>
+                                                                <select style="width: 120px; display: inline-block" class="dropdown-header" title="Month" name="month">
+                                                                    <option value="1" selected>January</option>
+                                                                    <option value="2">February</option>
+                                                                    <option value="3">March</option>
+                                                                    <option value="4">April</option>
+                                                                    <option value="5">May</option>
+                                                                    <option value="6">June</option>
+                                                                    <option value="7">July</option>
+                                                                    <option value="8">August</option>
+                                                                    <option value="9">September</option>
+                                                                    <option value="10">October</option>
+                                                                    <option value="11">November</option>
+                                                                    <option value="12">December</option>
                                                                 </select>
-                                                                <input type="text" style="width: 60px" class="input-text text" title="year" id="year" required>(eg: 2015)                                                        
+                                                                <input type="text" style="width: 60px" class="input-text text" title="year" name="year" required>(eg: 2015)                                                        
                                                             </td>
                                                         </tr>
                                                         <tr>
