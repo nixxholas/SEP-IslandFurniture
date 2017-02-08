@@ -17,6 +17,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -48,21 +54,12 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             // Retrieve all of the user payment information first
             String cardName = "";
             String cardNo = "";
-            //String countryId = (String) session.getAttribute("URLprefix");
+            double finalPrice = 0.0;
             int securityCode;
             int month, year;
             long countryId = 0;
-            double finalPrice = 0.00;
             long memberId = 0;
             ArrayList<ShoppingCartLineItem> shoppingCart = null;
-            
-//            if (session.getAttribute("countryID") != null) {
-//                countryId = (long) session.getAttribute("countryID");
-//            } else {
-//                // User has not selected a country yet.
-//                response.sendRedirect("/B/selectCountry.jsp");
-//                return;
-//            }
             
             if (session.getAttribute("memberID") != null) {
                 memberId = (long) session.getAttribute("memberID");
@@ -151,9 +148,9 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             }
             
             // Collate finalPrice
-            for (ShoppingCartLineItem item : shoppingCart) {
+             for (ShoppingCartLineItem item : shoppingCart) {
                 finalPrice += (item.getPrice() * item.getQuantity());
-            }
+             }
             
             // Debugging Purposes Only
             //out.println("Works");
@@ -161,6 +158,9 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             // We'll now parse it to the web API
             Response paymentRowResponse = createPaymentRowAtDB(memberId,
                     finalPrice, countryId);
+            
+            // Debugging Purposes Only
+            out.println(paymentRowResponse.getStatus());
             
         } catch (Exception ex) {
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
@@ -172,9 +172,17 @@ public class ECommerce_PaymentServlet extends HttpServlet {
           return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
     
-    public Response createPaymentRowAtDB(long memberId, double amountPaid,
-            long countryId) {
-        return null;
+    public Response createPaymentRowAtDB(long memberId, 
+            double finalPrice, long countryId) {
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client
+                .target("http://localhost:8080/IS3102_WebService-Student/webresources/commerce")
+                .path("createECommerceTransactionRecord")
+                .queryParam("finalPrice", finalPrice)
+                .queryParam("countryId", countryId);
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+        
+        return invocationBuilder.put(Entity.entity(memberId, MediaType.APPLICATION_JSON));
     }
     
     public Response addItemToPaymentRowAtDB() {

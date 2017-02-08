@@ -80,19 +80,19 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                     // Since the shopping cart exists
                     shoppingCart = (ArrayList<ShoppingCartLineItem>) session.getAttribute("shoppingCart");
                     
-                    // Self explanatory code
-                    for (ShoppingCartLineItem i : shoppingCart) {
-                        if (i.equals(item)) {
-                            i.setQuantity(i.getQuantity() + 1);
-                            break;
+                    if (shoppingCart.contains(item)) {
+                        // Self explanatory code
+                        for (int i = 0; i < shoppingCart.size(); i++) {
+                            ShoppingCartLineItem currItem = shoppingCart.get(i);
+                            if (currItem.equals(item)) {
+                                currItem.setQuantity(currItem.getQuantity() + 1);
+                                break;
+                            }
                         }
-                    }
+                    } else {
+                        // If things end up here it means that the arraylist already
+                        // existed but the code wasn't capable of handling it
                     
-                    // If things end up here it means that the arraylist already
-                    // existed but the code wasn't capable of handling it
-                    
-                    // Basically just toss the item in
-                    if (shoppingCart.isEmpty()) {
                         item.setQuantity(1);
                         shoppingCart.add(item);
                     }
