@@ -182,7 +182,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 .queryParam("countryId", countryId);
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         
-        return invocationBuilder.put(Entity.entity(memberId, MediaType.APPLICATION_JSON));
+        return invocationBuilder.put(Entity.entity(String.valueOf(memberId), MediaType.APPLICATION_JSON));
     }
     
     public Response addItemToPaymentRowAtDB() {

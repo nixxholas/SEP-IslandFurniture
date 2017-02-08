@@ -76,7 +76,7 @@ public class ECommerce_MemberLoginServlet extends HttpServlet {
                 .queryParam("password", password);
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
-        System.out.println("status: " + response.getStatus());
+        //System.out.println("status: " + response.getStatus());
 
         if (response.getStatus() != 200) {
             return null;
