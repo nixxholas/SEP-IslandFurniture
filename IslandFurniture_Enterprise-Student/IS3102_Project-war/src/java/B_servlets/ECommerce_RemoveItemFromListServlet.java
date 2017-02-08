@@ -90,14 +90,21 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
                 // }
                 
                 // This logic reduces latency by removing an additional for loop
-                for (int i = 0; i < shoppingCart.size(); i++) {
-                    ShoppingCartLineItem item = shoppingCart.get(i);
-                    
-                    for (String s : selected) {
-                        if (s.equals(item.getSKU())) {
-                            shoppingCart.remove(item);
-                            break;
-                        }
+                // for (int i = 0; i < shoppingCart.size(); i++) {
+                //    ShoppingCartLineItem item = shoppingCart.get(i);
+                //    
+                //    for (String s : selected) {
+                //        if (s.equals(item.getSKU())) {
+                //            shoppingCart.remove(item);
+                //        }
+                //    }
+                //}
+                
+                for (String s : selected) {
+                    for (int i = 0; i < shoppingCart.size(); i++) {
+                        if (shoppingCart.get(i).getSKU().equals(s)) {
+                            shoppingCart.remove(i);
+                        }   
                     }
                 }
                 
@@ -106,7 +113,7 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
                 
                 // Redirect the user and return a success message
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                    + "?goodMsg=The selected items have been removed.");
+                    + "?goodMsg=" + selected.length + " items have been removed.");
             } else {
                 // Redirect the user and return an error message
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
