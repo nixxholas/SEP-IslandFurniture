@@ -122,7 +122,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
                     // When we need to include more than one parameter in the URL
                     // https://coderanch.com/t/289258/java/passing-variables-response-sendRedirect
-                    + "?cat=" + URLEncoder.encode(category, "UTF=8")
+                    + "?cat=" + URLEncoder.encode(category)//, "UTF=8")
                     + "&errMsg=There aren't any stocks left");
             }
         } catch (IOException | NumberFormatException ex) {

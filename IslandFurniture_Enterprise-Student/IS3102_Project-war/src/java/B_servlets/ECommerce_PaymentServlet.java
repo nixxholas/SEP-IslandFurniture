@@ -52,6 +52,18 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             double finalPrice = 0.00;
             ArrayList<ShoppingCartLineItem> shoppingCart = null;
             
+            // Debugging Purposes Only
+            // out.println((ArrayList<ShoppingCartLineItem>) 
+            //        session.getAttribute("shoppingCart"));
+            if ((ArrayList<ShoppingCartLineItem>) 
+                    session.getAttribute("shoppingCart") != null) {
+                shoppingCart = (ArrayList<ShoppingCartLineItem>) 
+                        session.getAttribute("shoppingCart");
+            } else {
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?errMsg=Invalid Cart.");
+            }
+            
             if (!"".equals(request.getParameter("txtName")) && 
                     request.getParameter("txtName") != null) {
                 name = request.getParameter("txtName");
@@ -113,19 +125,19 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             }
             
             // Collate finalPrice
-//            for (ShoppingCartLineItem item : shoppingCart) {
-//                finalPrice += (item.getPrice() * item.getQuantity());
-//            }
+            for (ShoppingCartLineItem item : shoppingCart) {
+                finalPrice += (item.getPrice() * item.getQuantity());
+            }
             
             // Debugging Purposes Only
-            out.println("Works");
+            out.println("Works" + finalPrice);
             // session.getAttribute("URLprefix")
             
             // 
             
         } catch (Exception ex) {
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                    + "?errMsg=" + ex.toString());
+                    + "?errMsg=" + ex.getMessage());
         }
     }
     
