@@ -49,6 +49,7 @@ public class ECommerce_GetMember extends HttpServlet {
             
             // Member Details for Session
             session.setAttribute("member", member);
+            session.setAttribute("memberID", member.getId());
 
             session.setAttribute("memberName", member.getName());
             

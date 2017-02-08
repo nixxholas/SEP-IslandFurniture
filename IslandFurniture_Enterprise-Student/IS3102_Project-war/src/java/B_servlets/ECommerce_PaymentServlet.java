@@ -5,6 +5,7 @@
  */
 package B_servlets;
 
+import HelperClasses.Member;
 import HelperClasses.ShoppingCartLineItem;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -44,13 +46,37 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             //out.println(request.getParameter("txtName"));
             
             // Retrieve all of the user payment information first
-            String name = "";
+            String cardName = "";
             String cardNo = "";
             //String countryId = (String) session.getAttribute("URLprefix");
             int securityCode;
             int month, year;
+            long countryId = 0;
             double finalPrice = 0.00;
+            long memberId = 0;
             ArrayList<ShoppingCartLineItem> shoppingCart = null;
+            
+//            if (session.getAttribute("countryID") != null) {
+//                countryId = (long) session.getAttribute("countryID");
+//            } else {
+//                // User has not selected a country yet.
+//                response.sendRedirect("/B/selectCountry.jsp");
+//                return;
+//            }
+            
+            if (session.getAttribute("memberID") != null) {
+                memberId = (long) session.getAttribute("memberID");
+            } else {
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?errMsg=Your session has expired, please login again.");
+            }
+            
+            if (session.getAttribute("countryID") != null) {
+                countryId = (long) session.getAttribute("countryID");
+            } else {
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?errMsg=Your session has expired, please login again.");
+            }
             
             // Debugging Purposes Only
             // out.println((ArrayList<ShoppingCartLineItem>) 
@@ -66,7 +92,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             
             if (!"".equals(request.getParameter("txtName")) && 
                     request.getParameter("txtName") != null) {
-                name = request.getParameter("txtName");
+                cardName = request.getParameter("txtName");
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Please enter a valid name.");
@@ -130,10 +156,11 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             }
             
             // Debugging Purposes Only
-            out.println("Works" + finalPrice);
-            // session.getAttribute("URLprefix")
+            //out.println("Works");
             
-            // 
+            // We'll now parse it to the web API
+            Response paymentRowResponse = createPaymentRowAtDB(memberId,
+                    finalPrice, countryId);
             
         } catch (Exception ex) {
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
@@ -141,10 +168,18 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         }
     }
     
-    public static boolean isNumeric(String str)
-        {
+    public boolean isNumeric(String str) {
           return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
-        }
+    }
+    
+    public Response createPaymentRowAtDB(long memberId, double amountPaid,
+            long countryId) {
+        return null;
+    }
+    
+    public Response addItemToPaymentRowAtDB() {
+        return null;
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
