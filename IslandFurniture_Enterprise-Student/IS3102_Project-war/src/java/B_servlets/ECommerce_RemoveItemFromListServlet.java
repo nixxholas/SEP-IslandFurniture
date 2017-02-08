@@ -74,19 +74,31 @@ public class ECommerce_RemoveItemFromListServlet extends HttpServlet {
                 // }
                 
                 // Instead, we loop and add whatever we want to delete first
-                ArrayList<ShoppingCartLineItem> cartItemsToDelete = 
-                        new ArrayList();
+                // ArrayList<ShoppingCartLineItem> cartItemsToDelete = 
+                //       new ArrayList();
                 
-                for (ShoppingCartLineItem i : shoppingCart) {
+                // for (ShoppingCartLineItem i : shoppingCart) {
+                //    for (String s : selected) {
+                //        if (s.equals(i.getSKU())) {
+                //           cartItemsToDelete.add(i);
+                //        }
+                //    }
+                // }
+                
+                // for (ShoppingCartLineItem i : cartItemsToDelete) {
+                //    shoppingCart.remove(i);
+                // }
+                
+                // This logic reduces latency by removing an additional for loop
+                for (int i = 0; i < shoppingCart.size(); i++) {
+                    ShoppingCartLineItem item = shoppingCart.get(i);
+                    
                     for (String s : selected) {
-                        if (s.equals(i.getSKU())) {
-                           cartItemsToDelete.add(i);
+                        if (s.equals(item.getSKU())) {
+                            shoppingCart.remove(item);
+                            break;
                         }
                     }
-                }
-                
-                for (ShoppingCartLineItem i : cartItemsToDelete) {
-                    shoppingCart.remove(i);
                 }
                 
                 // Remember to return the cart
