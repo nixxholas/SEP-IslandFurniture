@@ -122,15 +122,20 @@ public class StoreentityFacadeREST extends AbstractFacade<Storeentity> {
     @Produces({"application/json"})
     public Response getStoreAddressInfo(@QueryParam("storeID") long storeID) {
         try {
-            Storeentity store = new Storeentity();
-            store.setId(storeID);
+            Storeentity store = new Storeentity(storeID);
             
             // Call the method within Store that retrieves information from the
             // database
+            store.retrieveStoreData();
             
-            String address = store.getAddress();
-            
-            return Response.ok(address, MediaType.APPLICATION_JSON).build();
+            if (store.getAddress() != null) {
+                return Response.ok(store.getAddress()
+                        + " Singapore " + store.getPostalcode()
+                        , MediaType.APPLICATION_JSON).build();
+            } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Address information for the store is missing.").build();
+            }
         } catch (Exception ex) {
             System.out.println(ex.toString());
             return Response.status(Response.Status.BAD_REQUEST)

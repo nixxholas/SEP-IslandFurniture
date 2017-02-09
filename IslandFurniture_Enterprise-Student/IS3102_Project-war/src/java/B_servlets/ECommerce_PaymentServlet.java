@@ -11,6 +11,8 @@ import Utils.LuhnAlgorithm;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +25,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -212,10 +215,20 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 session.setAttribute("transactionId", salesRecordId);
                 
                 // Got to retrieve the shop information for collection
+                Response storeInfo = retrieveStoreInfo();
                 
-                // Now begin propogating back to the shopping cart.
-                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                            + "?goodMsg=Transaction complete. Have a nice day!");
+                if (storeInfo.getStatus() == 200) {
+                    // Now begin propogating back to the shopping cart.
+                    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                                + "?goodMsg=Transaction complete. Have a nice day!"
+                                + "\n"
+                                + "Please collect your items at the stated address: " + 
+                                        storeInfo.readEntity(String.class));
+                } else {
+            response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?errMsg=Unable to retrieve collection address information.");
+                }
+
             } else {
                 out.println(paymentRowResponse.readEntity(String.class));
             }
@@ -270,6 +283,18 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         
         return invocationBuilder.put(Entity.entity(String.valueOf(lineitementityId), MediaType.APPLICATION_JSON));
+    }
+    
+    public Response retrieveStoreInfo() {
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client
+                .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.storeentity")
+                .path("getAddress")
+                .queryParam("storeID", 59);
+        
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+        
+        return invocationBuilder.get();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
