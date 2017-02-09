@@ -50,7 +50,7 @@ public class ECommerce_GetMember extends HttpServlet {
             // Member Details for Session
             session.setAttribute("member", member);
             session.setAttribute("memberID", member.getId());
-
+            //session.setAttribute("memberCountry", member.getCity());
             session.setAttribute("memberName", member.getName());
             
             //  RequestDispatcher rd = request.getRequestDispatcher("/IS3102_Project-war/B/SG/memberProfile.jsp");

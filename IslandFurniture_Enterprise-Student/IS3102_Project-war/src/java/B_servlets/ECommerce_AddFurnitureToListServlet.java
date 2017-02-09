@@ -47,8 +47,9 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         String category = (String) session.getAttribute("cat");
+        //String country = (String) session.getAttribute("memberCountry");
+        long countryId = (long) session.getAttribute("countryID");
         
-        //out.println(session.getAttribute("memberEmail"));
         try {
             if (request.getParameter("SKU").equals("")) {
                 response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
@@ -74,6 +75,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 item.setPrice(Double.parseDouble(request.getParameter("price")));
                 item.setName(request.getParameter("name"));
                 item.setImageURL(request.getParameter("imageURL"));
+                item.setCountryID(countryId);
                 
                 // Check the Cart to see if it (both the cart and the item) exists
                 if (session.getAttribute("shoppingCart") != null) {
@@ -112,6 +114,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                 // Redirect the user to the cart and display success
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?goodMsg=" + item.getName() + " added successfully to your cart.");
+                //+ country);
             } else {
                 // Since there isn't any stocks left available, send the user
                 // back.

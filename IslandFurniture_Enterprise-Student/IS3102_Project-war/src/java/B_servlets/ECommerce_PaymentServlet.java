@@ -57,8 +57,9 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             double finalPrice = 0.0;
             int securityCode;
             int month, year;
-            long countryId = 0;
             long memberId = 0;
+            //String country = "";
+            long countryId = 0;
             ArrayList<ShoppingCartLineItem> shoppingCart = null;
             
             if (session.getAttribute("memberID") != null) {
@@ -68,12 +69,12 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     + "?errMsg=Your session has expired, please login again.");
             }
             
-            if (session.getAttribute("countryID") != null) {
-                countryId = (long) session.getAttribute("countryID");
-            } else {
-                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                    + "?errMsg=Your session has expired, please login again.");
-            }
+            // if (session.getAttribute("memberCountry") != null) {
+            //    country = (String) session.getAttribute("memberCountry");
+            // } else {
+            //    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+            //        + "?errMsg=Your session has expired, please login again.");
+            // }
             
             // Debugging Purposes Only
             // out.println((ArrayList<ShoppingCartLineItem>) 
@@ -82,6 +83,9 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     session.getAttribute("shoppingCart") != null) {
                 shoppingCart = (ArrayList<ShoppingCartLineItem>) 
                         session.getAttribute("shoppingCart");
+                
+                // Set the countryid immediately
+                countryId = shoppingCart.get(1).getCountryID();
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Invalid Cart.");
@@ -223,6 +227,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 .queryParam("itemEntityID", item.getId())
                 .queryParam("quantity", item.getQuantity())
                 .queryParam("countryID", item.getCountryID());
+        
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         
         return invocationBuilder.put(Entity.entity(item, MediaType.APPLICATION_JSON));
