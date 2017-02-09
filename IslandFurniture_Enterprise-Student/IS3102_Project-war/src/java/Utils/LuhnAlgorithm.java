@@ -10,18 +10,38 @@ package Utils;
  * @author nixholas
  */
 public class LuhnAlgorithm {
-    public static boolean isValid(long number) {
-
-        int total = sumOfDoubleEvenPlace(number) + sumOfOddPlace(number);
-
-
-        if ((total % 10 == 0) && (prefixMatched(number, 1) == true) && (getSize(number)>=13 ) && (getSize(number)<=16 )) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    public static boolean isValid(long number) {
+//
+//        int total = sumOfDoubleEvenPlace(number) + sumOfOddPlace(number);
+//
+//
+//        if ((total % 10 == 0) && (prefixMatched(number, 1) == true) && (getSize(number)>=13 ) && (getSize(number)<=16 )) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
     
+    public static boolean isValid(String ccNumber)
+    {
+            int sum = 0;
+            boolean alternate = false;
+            for (int i = ccNumber.length() - 1; i >= 0; i--)
+            {
+                    int n = Integer.parseInt(ccNumber.substring(i, i + 1));
+                    if (alternate)
+                    {
+                            n *= 2;
+                            if (n > 9)
+                            {
+                                    n = (n % 10) + 1;
+                            }
+                    }
+                    sum += n;
+                    alternate = !alternate;
+            }
+            return (sum % 10 == 0);
+    }
     
     public static int getDigit(int number) {
 

@@ -312,6 +312,16 @@ public class Itementity implements Serializable {
             rs.close();
             
             // We've got to remove the quantity that we took as well
+            String qtyStmt = "UPDATE li.* from "
+                    + "country_ecommerce c, warehouseentity w, "
+                    + "storagebinentity sb, storagebinentity_lineitementity sbli, "
+                    + "lineitementity li, itementity i where li.ITEM_ID=i.ID "
+                    + "and sbli.lineItems_ID=li.ID "
+                    + "and sb.ID=sbli.StorageBinEntity_ID "
+                    + "and w.id=sb.WAREHOUSE_ID and c.warehouseentity_id=w.id "
+                    + "and sb.type<>'Outbound' AND ITEM_ID=?";
+            
+            PreparedStatement pstmt = conn.prepareStatement(qtyStmt);
             
             
             return lineitementityId;
@@ -321,4 +331,48 @@ public class Itementity implements Serializable {
         }
     }
 
+    public boolean deductAtDatabase(int quantity) throws ClassNotFoundException, SQLException {
+        Connection conn = DatabaseEngine.getConnection();
+
+        // String stmt = "INSERT INTO lineitementity (QUANTITY, ITEM_ID)"
+        //         + " VALUES "
+        //         + "(?, ?)";
+
+        String stmt = "UPDATE country_ecommerce c, warehouseentity w, "
+                + "storagebinentity sb, storagebinentity_lineitementity sbli, "
+                + "lineitementity li, itementity i "
+                + "SET li.QUANTITY = li.QUANTITY - ? "
+                + "WHERE li.ITEM_ID=i.ID and sbli.lineItems_ID=li.ID and "
+                + "sb.ID=sbli.StorageBinEntity_ID and w.id=sb.WAREHOUSE_ID and "
+                + "c.warehouseentity_id=w.id and sb.type<>'Outbound' AND "
+                + "ITEM_ID=?";
+        
+        //long lineitementityId;
+        try { 
+            // Auto Incremental Primary Key Retrieval
+            // http://stackoverflow.com/questions/7162989/sqlexception-generated-keys-not-requested-mysql
+            // Statement.RETURN_GENERATED_KEYS resolves the error below:
+            // java.sql.SQLException: Generated keys not requested. You need to specify Statement.RETURN_GENERATED_KEYS to Statement.executeUpdate() or Connection.prepareStatement().
+            PreparedStatement ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, quantity);
+            ps.setLong(2, this.id);
+            //ps.executeQuery();
+            // executeUpdate() Resolves the error below:
+            // java.sql.SQLException: Can not issue data manipulation statements with executeQuery().
+            ps.executeUpdate();
+            // Solves the error below?
+            // java.sql.SQLException: Can not issue data manipulation statements with executeQuery().
+            //ResultSet rs = ps.getResultSet();
+            //rs.next();
+            //this.setId(id);
+            
+            ps.close();
+            //rs.close();
+            
+            return true;
+        } catch (SQLException ex) {
+            System.out.println(ex.toString());
+            return false;
+        }
+    }
 }

@@ -128,10 +128,11 @@ public class StoreentityFacadeREST extends AbstractFacade<Storeentity> {
             // database
             store.retrieveStoreData();
             
-            if (store.getAddress() != null) {
-                return Response.ok(store.getAddress()
-                        + " Singapore " + store.getPostalcode()
-                        , MediaType.APPLICATION_JSON).build();
+            String resultInfo = store.getAddress() + ", Hotline: " + 
+                        store.getTelephone();
+            
+            if (store.getAddress() != null && store.getPostalcode() != null) {
+                return Response.ok(resultInfo, MediaType.APPLICATION_JSON).build();
             } else {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Address information for the store is missing.").build();

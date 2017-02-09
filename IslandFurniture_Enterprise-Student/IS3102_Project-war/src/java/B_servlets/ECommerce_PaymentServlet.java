@@ -106,14 +106,13 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             if (!"".equals(request.getParameter("txtCardNo")) && 
                     request.getParameter("txtCardNo") != null &&
                     isNumeric(request.getParameter("txtCardNo"))) {
-                cardNo = Long.parseLong(request.getParameter("txtCardNo"));
-                
-                if (LuhnAlgorithm.isValid(cardNo)) {
+                //if (LuhnAlgorithm.isValid(request.getParameter("txtCardNo"))) {
                     // It's a valid credit number, so we'll pass
-                } else {
-                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                    + "?errMsg=Please enter a valid Card Number.");
-                }
+                    cardNo = Long.parseLong(request.getParameter("txtCardNo"));
+                //} else {
+                //    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                //        + "?errMsg=Please enter a valid Card Number.");
+                //}
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Please enter a Card Number.");
@@ -187,7 +186,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 // Let's begin linking the shopping cart items to the sales record
                 for (ShoppingCartLineItem item : shoppingCart) {
                     // Insert the corresponding line item data to the DB
-                    Response itemRowResponse = addItemToPaymentRowAtDB(salesRecordId, item);
+                    Response itemRowResponse = removeQuantityFromItem(salesRecordId, item);
                     
                     if (itemRowResponse.getStatus() != 200) {
                         response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
@@ -196,17 +195,17 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     }
                     
                     // Finally, bind the lineitems with the member
-                    long lineitementityId = Long.parseLong(itemRowResponse
-                                .readEntity(String.class));
+                    //long lineitementityId = Long.parseLong(itemRowResponse
+                    //            .readEntity(String.class));
                     
-                    Response lineItemMemberRes = 
-                            bindItemToMemberAtDB(lineitementityId, memberId);
+                    //Response lineItemMemberRes = 
+                    //        bindItemToMemberAtDB(lineitementityId, memberId);
                     
-                    if (lineItemMemberRes.getStatus() != 200) {
-                        response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                            + "?errMsg=" + lineItemMemberRes.readEntity(String.class));
-                        return;
-                    }
+                    //if (lineItemMemberRes.getStatus() != 200) {
+                    //    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    //        + "?errMsg=" + lineItemMemberRes.readEntity(String.class));
+                    //    return;
+                    //}
                 }
                 
                 // Reset the shopping cart
@@ -216,14 +215,16 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 
                 // Got to retrieve the shop information for collection
                 Response storeInfo = retrieveStoreInfo();
+                String storeInformation = storeInfo.readEntity(String.class);
                 
                 if (storeInfo.getStatus() == 200) {
                     // Now begin propogating back to the shopping cart.
                     response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                                + "?goodMsg=Transaction complete. Have a nice day!"
-                                + "\n"
-                                + "Please collect your items at the stated address: " + 
-                                        storeInfo.readEntity(String.class));
+                                + "?goodMsg="
+                                + "Transaction complete. Have a nice day! "
+                                + "Please collect your items at the stated address: " 
+                                + storeInformation
+                    );
                 } else {
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Unable to retrieve collection address information.");
@@ -234,9 +235,9 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             }
             
         } catch (Exception ex) {
-            System.out.println(ex.toString());
+            System.out.println(ex.getMessage());
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                    + "?errMsg=" + ex.getMessage());
+                    + "?errMsg=" + ex.toString());
         }
     }
     
@@ -257,11 +258,11 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         return invocationBuilder.put(Entity.entity(String.valueOf(memberId), MediaType.APPLICATION_JSON));
     }
     
-    public Response addItemToPaymentRowAtDB(long salesRecordId, ShoppingCartLineItem item) {
+    public Response removeQuantityFromItem(long salesRecordId, ShoppingCartLineItem item) {
         Client client = ClientBuilder.newClient();
         WebTarget target = client
                 .target("http://localhost:8080/IS3102_WebService-Student/webresources/commerce")
-                .path("createECommerceLineItemRecord")
+                .path("removeQuantityFromItemRecord")
                 .queryParam("salesRecordID", salesRecordId)
                 .queryParam("itemEntityID", item.getId())
                 .queryParam("quantity", item.getQuantity())
