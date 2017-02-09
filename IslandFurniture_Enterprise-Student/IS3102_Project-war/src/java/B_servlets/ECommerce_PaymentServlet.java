@@ -161,8 +161,32 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             
             // Debugging Purposes Only
             //out.println(paymentRowResponse.getStatus());
+            
             if (paymentRowResponse.getStatus() == 200) {
-                out.println("Successful Sales Entity Row Creation");
+                long salesRecordId = Long.parseLong(paymentRowResponse.readEntity(String.class));
+                
+                // Debugging Purposes Only
+                //out.println("Successful Sales Entity Row Creation" + salesRecordId);
+                
+                // Let's begin linking the shopping cart items to the sales record
+                for (ShoppingCartLineItem item : shoppingCart) {
+                    Response res = addItemToPaymentRowAtDB(item);
+                    
+                    if (res.getStatus() != 200) {
+                        response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                            + "?errMsg=" + res.readEntity(String.class));
+                        return;
+                    }
+                }
+                
+                // Reset the shopping cart
+                session.setAttribute("shoppingCart",
+                        new ArrayList<ShoppingCartLineItem>());
+                session.setAttribute("transactionId", salesRecordId);
+                
+                // Now begin propogating back to the shopping cart.
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                            + "?goodMsg=Transaction complete. Have a nice day!");
             } else {
                 out.println(paymentRowResponse.readEntity(String.class));
             }
@@ -190,7 +214,9 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         return invocationBuilder.put(Entity.entity(String.valueOf(memberId), MediaType.APPLICATION_JSON));
     }
     
-    public Response addItemToPaymentRowAtDB() {
+    public Response addItemToPaymentRowAtDB(ShoppingCartLineItem item) {
+        
+        
         return null;
     }
 
