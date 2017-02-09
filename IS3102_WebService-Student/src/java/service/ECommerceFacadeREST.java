@@ -7,6 +7,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.ws.rs.core.Context;
@@ -23,6 +25,7 @@ import javax.ws.rs.core.Response;
 
 @Path("commerce")
 public class ECommerceFacadeREST {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Context
     private UriInfo context;
@@ -75,9 +78,11 @@ public class ECommerceFacadeREST {
              *   ``STORE_ID` bigint(20) DEFAULT NULL,
              */
             String stmt = "INSERT INTO salesrecordentity (AMOUNTDUE, "
-                    + "AMOUNTPAID, MEMBER_ID)"
+                    + "AMOUNTPAID, AMOUNTPAIDUSINGPOINTS, CREATEDDATE, "
+                    + "CURRENCY, LOYALTYPOINTSDEDUCTED, POSNAME, "
+                    + "RECEIPTNO, SERVEDBYSTAFF, MEMBER_ID, STORE_ID)"
                     + " VALUES "
-                    + "(?, ?, ?)";
+                    + "(?, ?, ?, ?, ?)";
 
             // Auto Incremental Primary Key Retrieval
             // http://stackoverflow.com/questions/7162989/sqlexception-generated-keys-not-requested-mysql
@@ -86,7 +91,15 @@ public class ECommerceFacadeREST {
             PreparedStatement ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
             ps.setDouble(1, finalPrice);
             ps.setDouble(2, finalPrice);
-            ps.setLong(3, Long.parseLong(memberId));
+            ps.setDouble(3, 0); // AMOUNTPAIDUSINGPOINTS -- Default 0.
+            ps.setTimestamp(4, new java.sql.Timestamp(System.currentTimeMillis()));
+            ps.setString(5, "SGD"); // CURRENCY -- Let's assume Default as SGD
+            ps.setInt(6, 0); // LOYALTYPOINTSDEDUCTED -- Let's assume Default as 0
+            ps.setString(7, null); // POSNAME -- There's no counter in ECommerce.. Set to null
+            ps.setString(8, null); // RECEIPTNO -- No physical receipt...
+            ps.setString(9, null); // SERVEDBYSTAFF -- No STAFF SERVING ECOMMERCE..
+            ps.setLong(10, Long.parseLong(memberId));
+            ps.setLong(11, 10001); // STORE_ID -- ECommerce -> 10001
             
             //ps.executeQuery();
             
