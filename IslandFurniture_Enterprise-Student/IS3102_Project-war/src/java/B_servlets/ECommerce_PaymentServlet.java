@@ -174,11 +174,24 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 
                 // Let's begin linking the shopping cart items to the sales record
                 for (ShoppingCartLineItem item : shoppingCart) {
-                    Response res = addItemToPaymentRowAtDB(salesRecordId, item);
+                    // Insert the corresponding line item data to the DB
+                    Response itemRowResponse = addItemToPaymentRowAtDB(salesRecordId, item);
                     
-                    if (res.getStatus() != 200) {
+                    if (itemRowResponse.getStatus() != 200) {
                         response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                            + "?errMsg=" + res.readEntity(String.class));
+                            + "?errMsg=" + itemRowResponse.readEntity(String.class));
+                        return;
+                    }
+                    
+                    // Finally, bind the lineitems with the member
+                    long lineitementityId = Long.parseLong(paymentRowResponse
+                    .readEntity(String.class));
+                    Response lineItemMemberRes = 
+                            bindItemToMemberAtDB(lineitementityId, memberId);
+                    
+                    if (lineItemMemberRes.getStatus() != 200) {
+                        response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                            + "?errMsg=" + lineItemMemberRes.readEntity(String.class));
                         return;
                     }
                 }
@@ -187,6 +200,8 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 session.setAttribute("shoppingCart",
                         new ArrayList<ShoppingCartLineItem>());
                 session.setAttribute("transactionId", salesRecordId);
+                
+                // Got to retrieve the shop information for collection
                 
                 // Now begin propogating back to the shopping cart.
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
@@ -231,6 +246,19 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         
         return invocationBuilder.put(Entity.entity(item, MediaType.APPLICATION_JSON));
+    }
+    
+    public Response bindItemToMemberAtDB(long lineitementityId, 
+            long memberId) {
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client
+                .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.memberentity")
+                .path("createECommerceLineItemRecord")
+                .queryParam("memberId", memberId);
+        
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+        
+        return invocationBuilder.put(Entity.entity(String.valueOf(lineitementityId), MediaType.APPLICATION_JSON));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

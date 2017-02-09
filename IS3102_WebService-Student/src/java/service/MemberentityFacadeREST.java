@@ -13,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +63,41 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Path("{id}")
     public void remove(@PathParam("id") Long id) {
         super.remove(super.find(id));
+    }
+    
+    @PUT
+    @Path("addlineitem")
+    @Consumes("application.json")
+    @Produces("application/json")
+    public Response addLineItem(String lineitementityId, @QueryParam("memberId") long memberId) {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
+            
+            /**
+             * memberentity_lineitementity
+             *   `MemberEntity_ID` bigint(20) NOT NULL,
+             *   `shoppingList_ID` bigint(20) NOT NULL,
+             */
+            
+            String stmt = "INSERT INTO memberentity_lineitementity "
+                    + "(MemberEntity_ID, shoppingList_ID)"
+                    + " VALUES "
+                    + "(?, ?)";
+            
+            PreparedStatement ps = 
+                    conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, memberId);
+            ps.setLong(2, Long.parseLong(lineitementityId));
+            
+            ps.executeUpdate();
+            
+            ps.close();
+            
+            return Response.ok("Successful Update!").build();
+        } catch (Exception ex) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(ex.toString()).build();
+        }
     }
 
     /**
