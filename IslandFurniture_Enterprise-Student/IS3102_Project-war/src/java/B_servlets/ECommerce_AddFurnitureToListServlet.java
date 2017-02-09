@@ -51,6 +51,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         
         try {
             long countryId = 0;
+            int quantity = 0;
             
             if (session.getAttribute("countryID") != null) {
                 countryId = (long) session.getAttribute("countryID");
@@ -67,9 +68,11 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
             String sku = (String) request.getParameter("SKU");
             //out.println(id);
             
+            quantity = retrieveQuantity(sku);
+            
             // Before we add anything to the user's cart, we'll check for the
             // stock first.
-            if (itemIsAvailable(sku)) {
+            if (quantity > 0) {
                 //out.println("Item is in stock");
                 ArrayList<ShoppingCartLineItem> shoppingCart;
                 
@@ -95,7 +98,17 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                         for (int i = 0; i < shoppingCart.size(); i++) {
                             ShoppingCartLineItem currItem = shoppingCart.get(i);
                             if (currItem.equals(item)) {
-                                currItem.setQuantity(currItem.getQuantity() + 1);
+                                if ((currItem.getQuantity() + 1) <= quantity) {
+                                    currItem.setQuantity(currItem.getQuantity() + 1);
+                                } else {
+                                    // Encoding URLs the new way
+                                    // http://stackoverflow.com/questions/10786042/java-url-encoding-of-query-string-parameters
+                                    response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
+                                        // When we need to include more than one parameter in the URL
+                                        // https://coderanch.com/t/289258/java/passing-variables-response-sendRedirect
+                                        + "?cat=" + URLEncoder.encode(category)//, "UTF=8")
+                                        + "&errMsg=There aren't any stocks left.");
+                                }
                                 break;
                             }
                         }
@@ -155,7 +168,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
      * This is the product's UID.
      * @return 
      */
-    public boolean itemIsAvailable(String sku) {
+    public int retrieveQuantity(String sku) {
         Client client = ClientBuilder.newClient();
         WebTarget target = client
                 .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.storeentity")
@@ -168,7 +181,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         String qtyStr = response.readEntity(String.class);
         int qty = Integer.parseInt(qtyStr);
         //System.out.println("status: " + response.getStatus());
-        return qty > 0;
+        return qty;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

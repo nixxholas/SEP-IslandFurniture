@@ -116,6 +116,27 @@ public class StoreentityFacadeREST extends AbstractFacade<Storeentity> {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
+    
+    @GET
+    @Path("getAddress")
+    @Produces({"application/json"})
+    public Response getStoreAddressInfo(@QueryParam("storeID") long storeID) {
+        try {
+            Storeentity store = new Storeentity();
+            store.setId(storeID);
+            
+            // Call the method within Store that retrieves information from the
+            // database
+            
+            String address = store.getAddress();
+            
+            return Response.ok(address, MediaType.APPLICATION_JSON).build();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(ex.toString()).build();
+        }
+    }
 
     @Override
     protected EntityManager getEntityManager() {

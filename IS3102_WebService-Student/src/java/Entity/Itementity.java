@@ -290,10 +290,11 @@ public class Itementity implements Serializable {
                 + "(?, ?)";
 
         long lineitementityId;
-        try { // Auto Incremental Primary Key Retrieval
-        // http://stackoverflow.com/questions/7162989/sqlexception-generated-keys-not-requested-mysql
-        // Statement.RETURN_GENERATED_KEYS resolves the error below:
-        // java.sql.SQLException: Generated keys not requested. You need to specify Statement.RETURN_GENERATED_KEYS to Statement.executeUpdate() or Connection.prepareStatement().
+        try { 
+            // Auto Incremental Primary Key Retrieval
+            // http://stackoverflow.com/questions/7162989/sqlexception-generated-keys-not-requested-mysql
+            // Statement.RETURN_GENERATED_KEYS resolves the error below:
+            // java.sql.SQLException: Generated keys not requested. You need to specify Statement.RETURN_GENERATED_KEYS to Statement.executeUpdate() or Connection.prepareStatement().
             PreparedStatement ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, quantity);
             ps.setLong(2, this.id);
@@ -306,9 +307,12 @@ public class Itementity implements Serializable {
             ResultSet rs = ps.getGeneratedKeys();
             rs.next();
             lineitementityId = rs.getLong(1);
-           
+            
             ps.close();
             rs.close();
+            
+            // We've got to remove the quantity that we took as well
+            
             
             return lineitementityId;
         } catch (SQLException ex) {
