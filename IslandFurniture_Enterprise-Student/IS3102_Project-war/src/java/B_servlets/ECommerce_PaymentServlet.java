@@ -7,6 +7,7 @@ package B_servlets;
 
 import HelperClasses.Member;
 import HelperClasses.ShoppingCartLineItem;
+import Utils.LuhnAlgorithm;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             
             // Retrieve all of the user payment information first
             String cardName = "";
-            String cardNo = "";
+            long cardNo;
             double finalPrice = 0.0;
             int securityCode;
             int month, year;
@@ -99,9 +100,17 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     + "?errMsg=Please enter a valid name.");
             }
             
-            if (!"".equals(request.getParameter("txtName")) && 
-                    request.getParameter("txtName") != null) {
-                cardNo = request.getParameter("txtCardNo");
+            if (!"".equals(request.getParameter("txtCardNo")) && 
+                    request.getParameter("txtCardNo") != null &&
+                    isNumeric(request.getParameter("txtCardNo"))) {
+                cardNo = Long.parseLong(request.getParameter("txtCardNo"));
+                
+                if (LuhnAlgorithm.isValid(cardNo)) {
+                    // It's a valid credit number, so we'll pass
+                } else {
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?errMsg=Please enter a valid Card Number.");
+                }
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Please enter a Card Number.");
