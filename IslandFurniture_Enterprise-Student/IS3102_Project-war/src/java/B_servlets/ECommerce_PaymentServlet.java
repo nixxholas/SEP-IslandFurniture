@@ -194,7 +194,8 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     
                     // Finally, bind the lineitems with the member
                     long lineitementityId = Long.parseLong(itemRowResponse
-                    .readEntity(String.class));
+                                .readEntity(String.class));
+                    
                     Response lineItemMemberRes = 
                             bindItemToMemberAtDB(lineitementityId, memberId);
                     
@@ -220,6 +221,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             }
             
         } catch (Exception ex) {
+            System.out.println(ex.toString());
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=" + ex.getMessage());
         }

@@ -5,7 +5,14 @@
  */
 package Entity;
 
+import Client.DatabaseEngine;
+import com.sun.mail.iap.Response;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -34,11 +41,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "lineitementity")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Lineitementity.findAll", query = "SELECT l FROM Lineitementity l"),
-    @NamedQuery(name = "Lineitementity.findById", query = "SELECT l FROM Lineitementity l WHERE l.id = :id"),
-    @NamedQuery(name = "Lineitementity.findByPacktype", query = "SELECT l FROM Lineitementity l WHERE l.packtype = :packtype"),
+    @NamedQuery(name = "Lineitementity.findAll", query = "SELECT l FROM Lineitementity l")
+    ,
+    @NamedQuery(name = "Lineitementity.findById", query = "SELECT l FROM Lineitementity l WHERE l.id = :id")
+    ,
+    @NamedQuery(name = "Lineitementity.findByPacktype", query = "SELECT l FROM Lineitementity l WHERE l.packtype = :packtype")
+    ,
     @NamedQuery(name = "Lineitementity.findByQuantity", query = "SELECT l FROM Lineitementity l WHERE l.quantity = :quantity")})
 public class Lineitementity implements Serializable {
+
     @ManyToMany(mappedBy = "lineitementityList")
     private List<Memberentity> memberentityList;
     private static final long serialVersionUID = 1L;
@@ -121,7 +132,6 @@ public class Lineitementity implements Serializable {
         return "Entity.Lineitementity[ id=" + id + " ]";
     }
 
-
     @XmlTransient
     public List<Memberentity> getMemberentityList() {
         return memberentityList;
@@ -129,6 +139,46 @@ public class Lineitementity implements Serializable {
 
     public void setMemberentityList(List<Memberentity> memberentityList) {
         this.memberentityList = memberentityList;
+    }
+
+    /**
+     * addToSalesRecord
+     *
+     * Adds the line item to the sales record. Also creates the line item before
+     * it gets binded with the sales record.
+     *
+     * @param salesRecordId
+     * This takes in the sales record id that is relevant to the Lineitementity.
+     * 
+     * @return
+     */
+    public boolean addToSalesRecord(long salesRecordId) throws SQLException, ClassNotFoundException {
+        try {
+            Connection conn = DatabaseEngine.getConnection();
+
+            // We will now add it to the composite key table
+            String salestmt = "INSERT INTO salesrecordentity_lineitementity "
+                    + "(SalesRecordEntity_ID, itemsPurchased_ID)"
+                    + " VALUES "
+                    + "(?, ?)"; 
+
+            PreparedStatement ps
+                    = conn.prepareStatement(salestmt, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, salesRecordId);
+            ps.setLong(2, this.id);
+
+            ps.executeUpdate();
+
+            // No need to retrieve any data back, let's go back to the
+            // Servlet
+            ps.close();
+            
+            return true;
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+            return false;
+        }
+
     }
 
 }

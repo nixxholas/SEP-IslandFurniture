@@ -15,7 +15,6 @@ import EntityManager.SupplierEntity;
 import EntityManager.Supplier_ItemEntity;
 import HelperClasses.ReturnHelper;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.ejb.Remove;
