@@ -170,7 +170,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 
                 // Let's begin linking the shopping cart items to the sales record
                 for (ShoppingCartLineItem item : shoppingCart) {
-                    Response res = addItemToPaymentRowAtDB(item);
+                    Response res = addItemToPaymentRowAtDB(salesRecordId, item);
                     
                     if (res.getStatus() != 200) {
                         response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
@@ -214,10 +214,18 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         return invocationBuilder.put(Entity.entity(String.valueOf(memberId), MediaType.APPLICATION_JSON));
     }
     
-    public Response addItemToPaymentRowAtDB(ShoppingCartLineItem item) {
+    public Response addItemToPaymentRowAtDB(long salesRecordId, ShoppingCartLineItem item) {
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client
+                .target("http://localhost:8080/IS3102_WebService-Student/webresources/commerce")
+                .path("createECommerceLineItemRecord")
+                .queryParam("salesRecordID", salesRecordId)
+                .queryParam("itemEntityID", item.getId())
+                .queryParam("quantity", item.getQuantity())
+                .queryParam("countryID", item.getCountryID());
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         
-        
-        return null;
+        return invocationBuilder.put(Entity.entity(item, MediaType.APPLICATION_JSON));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
