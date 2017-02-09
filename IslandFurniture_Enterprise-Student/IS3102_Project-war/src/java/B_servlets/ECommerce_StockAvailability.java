@@ -68,6 +68,7 @@ public class ECommerce_StockAvailability extends HttpServlet {
             }
             String result = (String) response.readEntity(String.class);
             System.out.println("Result returned from ws: " + result);
+            System.out.println("Result Store ID: " + storeID);
             return Integer.parseInt(result);
 
         } catch (Exception e) {

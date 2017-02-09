@@ -67,7 +67,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     
     @PUT
     @Path("addlineitem")
-    @Consumes("application.json")
+    @Consumes("application/json")
     @Produces("application/json")
     public Response addLineItem(String lineitementityId, @QueryParam("memberId") long memberId) {
         try {
@@ -259,11 +259,13 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
                 return Response.ok(email, MediaType.APPLICATION_JSON).build();
             } else {
                 System.out.println("Login credentials provided were incorrect, password wrong.");
-                return Response.status(Response.Status.UNAUTHORIZED).build();
+                return Response.status(Response.Status.UNAUTHORIZED)
+                        .entity("Login credentials provided were incorrect, password wrong.").build();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(ex.toString()).build();
         }
     }
     

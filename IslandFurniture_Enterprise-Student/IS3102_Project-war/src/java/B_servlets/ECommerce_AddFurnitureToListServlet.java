@@ -48,9 +48,17 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         
         String category = (String) session.getAttribute("cat");
         //String country = (String) session.getAttribute("memberCountry");
-        long countryId = (long) session.getAttribute("countryID");
         
         try {
+            long countryId = 0;
+            
+            if (session.getAttribute("countryID") != null) {
+                countryId = (long) session.getAttribute("countryID");
+            } else {
+                response.sendRedirect("/B/selectCountry.jsp");
+                return;
+            }
+            
             if (request.getParameter("SKU").equals("")) {
                 response.sendRedirect("/IS3102_Project-war/B/SG/furnitureCategory.jsp"
                     + "?cat=" + URLEncoder.encode(category, "UTF=8")
@@ -126,7 +134,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                     // When we need to include more than one parameter in the URL
                     // https://coderanch.com/t/289258/java/passing-variables-response-sendRedirect
                     + "?cat=" + URLEncoder.encode(category)//, "UTF=8")
-                    + "&errMsg=There aren't any stocks left");
+                    + "&errMsg=There aren't any stocks left.");
             }
         } catch (IOException | NumberFormatException ex) {
             // out.println(ex.toString());
@@ -152,7 +160,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
         WebTarget target = client
                 .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.storeentity")
                 .path("getQuantity")
-                .queryParam("storeID", 10001)
+                .queryParam("storeID", 59)
                 .queryParam("SKU", sku);
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();

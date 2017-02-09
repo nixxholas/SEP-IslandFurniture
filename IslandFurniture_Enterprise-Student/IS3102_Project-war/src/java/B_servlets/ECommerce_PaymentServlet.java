@@ -85,7 +85,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                         session.getAttribute("shoppingCart");
                 
                 // Set the countryid immediately
-                countryId = shoppingCart.get(1).getCountryID();
+                countryId = shoppingCart.get(0).getCountryID();
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Invalid Cart.");
@@ -184,7 +184,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     }
                     
                     // Finally, bind the lineitems with the member
-                    long lineitementityId = Long.parseLong(paymentRowResponse
+                    long lineitementityId = Long.parseLong(itemRowResponse
                     .readEntity(String.class));
                     Response lineItemMemberRes = 
                             bindItemToMemberAtDB(lineitementityId, memberId);
@@ -211,6 +211,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             }
             
         } catch (Exception ex) {
+            ex.printStackTrace();
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=" + ex.getMessage());
         }
@@ -253,7 +254,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         Client client = ClientBuilder.newClient();
         WebTarget target = client
                 .target("http://localhost:8080/IS3102_WebService-Student/webresources/entity.memberentity")
-                .path("createECommerceLineItemRecord")
+                .path("addlineitem")
                 .queryParam("memberId", memberId);
         
         Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);

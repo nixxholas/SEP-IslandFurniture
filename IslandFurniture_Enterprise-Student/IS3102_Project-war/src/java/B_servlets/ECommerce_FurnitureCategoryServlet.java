@@ -28,6 +28,7 @@ public class ECommerce_FurnitureCategoryServlet extends HttpServlet {
         try {
             HttpSession session = request.getSession();
             String category = URLDecoder.decode(request.getParameter("cat"));
+            session.setAttribute("cat", category);
             Long countryID = (Long) session.getAttribute("countryID");
 
             List<Furniture> furniture = retrieveFurnitureByCategoryRESTful(countryID, category);

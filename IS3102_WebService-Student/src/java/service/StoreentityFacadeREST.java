@@ -94,9 +94,11 @@ public class StoreentityFacadeREST extends AbstractFacade<Storeentity> {
             int qty = 0;
             if (rs.next()) {
                 qty = rs.getInt("sum");
-            }
 
-            return Response.ok(qty + "", MediaType.APPLICATION_JSON).build();
+                return Response.ok(qty + "", MediaType.APPLICATION_JSON).build();
+            } else {
+                return Response.ok(0 + "", MediaType.APPLICATION_JSON).build();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             return Response.status(Response.Status.NOT_FOUND).build();

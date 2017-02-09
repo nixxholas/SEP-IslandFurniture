@@ -14,8 +14,7 @@ public class AccountManagement_LogoutServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            HttpSession session;
-            session = request.getSession();
+            HttpSession session = request.getSession();
             session.invalidate();
             response.sendRedirect("A1/staffLogin.jsp?goodMsg=Logout Successful.");
         } finally {

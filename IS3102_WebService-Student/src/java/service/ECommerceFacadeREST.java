@@ -100,7 +100,7 @@ public class ECommerceFacadeREST {
             ps.setString(8, null); // RECEIPTNO -- No physical receipt...
             ps.setString(9, null); // SERVEDBYSTAFF -- No STAFF SERVING ECOMMERCE..
             ps.setLong(10, Long.parseLong(memberId));
-            ps.setLong(11, 10001); // STORE_ID -- ECommerce -> 10001
+            ps.setLong(11, 59); // STORE_ID -- ECommerce -> 10001
             
             //ps.executeQuery();
             
@@ -173,6 +173,7 @@ public class ECommerceFacadeREST {
             rs.next();
             
             long lineitementityId = rs.getLong(1);
+            
             ps.close();
             
             // We will now add it to the composite key table
