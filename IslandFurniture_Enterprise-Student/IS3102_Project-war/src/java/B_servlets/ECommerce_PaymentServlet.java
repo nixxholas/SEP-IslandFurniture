@@ -231,8 +231,9 @@ public class ECommerce_PaymentServlet extends HttpServlet {
 
             } else {
                 out.println(paymentRowResponse.readEntity(String.class));
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                        + "?errMsg=" + paymentRowResponse.readEntity(String.class));
             }
-            
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"

@@ -142,10 +142,7 @@ public class ECommerceFacadeREST {
             @QueryParam("countryID") long countryId) {
         try {
             // Initialize the Lineitementity object first
-            Itementity item = new Itementity();
-            //Lineitementity lineitem = new Lineitementity();
-            
-            item.setId(itemEntityId);
+            Itementity item = new Itementity(itemEntityId);
             
             if (item.deductAtDatabase(quantity)) {
                 return Response.status(Response.Status.OK)

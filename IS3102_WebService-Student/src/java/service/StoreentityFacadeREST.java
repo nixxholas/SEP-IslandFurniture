@@ -86,8 +86,7 @@ public class StoreentityFacadeREST extends AbstractFacade<Storeentity> {
     @Produces({"application/json"})
     public Response getItemQuantityOfStore(@QueryParam("storeID") Long storeID, @QueryParam("SKU") String SKU) {
         try {
-            Storeentity store = new Storeentity();
-            store.setId(storeID);
+            Storeentity store = new Storeentity(storeID);
             
             int qty = store.getItemQuantity(SKU);
             if (qty >= 0) {

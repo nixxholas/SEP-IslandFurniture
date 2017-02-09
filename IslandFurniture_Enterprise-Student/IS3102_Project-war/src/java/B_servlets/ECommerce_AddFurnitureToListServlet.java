@@ -107,7 +107,7 @@ public class ECommerce_AddFurnitureToListServlet extends HttpServlet {
                                         // When we need to include more than one parameter in the URL
                                         // https://coderanch.com/t/289258/java/passing-variables-response-sendRedirect
                                         + "?cat=" + URLEncoder.encode(category)//, "UTF=8")
-                                        + "&errMsg=There is insufficient stocks for your request.");
+                                        + "&errMsg=There is insufficient stock for your request.");
                                 }
                                 break;
                             }
