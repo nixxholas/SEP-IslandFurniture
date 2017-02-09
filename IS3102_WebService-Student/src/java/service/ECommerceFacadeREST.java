@@ -148,16 +148,16 @@ public class ECommerceFacadeREST {
             item.setId(itemEntityId);
             
             // Then retrieve the primary key from the database after adding it
-            long lineitemid = item.addToDatabase(quantity);
+            lineitem.setId(item.addToDatabase(quantity));
             
             // Bind it with the salesrecordentity
             lineitem.addToSalesRecord(salesRecordId);
             
-            if (lineitemid > 0) {
-                return Response.ok(String.valueOf(lineitemid)).build();
+            if (lineitem.getId() > 0) {
+                return Response.ok(String.valueOf(lineitem.getId())).build();
             } else {
                 return Response.status(Response.Status.CONFLICT)
-                        .entity(String.valueOf(lineitemid)).build();
+                        .entity(String.valueOf(lineitem.getId())).build();
             }
         } catch (ClassNotFoundException | SQLException ex) {
              return Response.status(Response.Status.BAD_REQUEST)

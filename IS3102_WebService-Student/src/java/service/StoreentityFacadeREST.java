@@ -1,5 +1,6 @@
 package service;
 
+import Client.DatabaseEngine;
 import Entity.Storeentity;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -85,21 +86,7 @@ public class StoreentityFacadeREST extends AbstractFacade<Storeentity> {
     @Produces({"application/json"})
     public Response getItemQuantityOfStore(@QueryParam("storeID") Long storeID, @QueryParam("SKU") String SKU) {
         try {
-           
-            // Java Beans method
-//            Query q = em.createQuery("SELECT sum(l.QUANTITY) as sum FROM storeentity s, warehouseentity w, storagebinentity sb, storagebinentity_lineitementity sbli, lineitementity l, itementity i where s.WAREHOUSE_ID=w.ID and w.ID=sb.WAREHOUSE_ID and sb.ID=sbli.StorageBinEntity_ID and sbli.lineItems_ID=l.ID and l.ITEM_ID=i.ID and s.ID=:storeid and i.SKU=:sku");
-//            q.setParameter("storeid", storeID);
-//            q.setParameter("sku", SKU);
-//            
-//            int quantity = (Integer) q.getSingleResult();
-//            if (quantity < 0) {
-//                return Response.ok(quantity + "", MediaType.APPLICATION_JSON).build();
-//            } else {
-//                return Response.ok(0 + "", MediaType.APPLICATION_JSON).build();
-//            }
-            
-            // Non-Java Beans method
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
+            Connection conn = DatabaseEngine.getConnection();
             String stmt = "SELECT sum(l.QUANTITY) as sum FROM storeentity s, warehouseentity w, storagebinentity sb, storagebinentity_lineitementity sbli, lineitementity l, itementity i where s.WAREHOUSE_ID=w.ID and w.ID=sb.WAREHOUSE_ID and sb.ID=sbli.StorageBinEntity_ID and sbli.lineItems_ID=l.ID and l.ITEM_ID=i.ID and s.ID=? and i.SKU=?";
             
             PreparedStatement ps = conn.prepareStatement(stmt);

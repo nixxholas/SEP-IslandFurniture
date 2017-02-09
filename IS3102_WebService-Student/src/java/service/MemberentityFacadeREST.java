@@ -72,29 +72,40 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response addLineItem(String lineitementityId, @QueryParam("memberId") long memberId) {
         try {
-            Connection conn = DatabaseEngine.getConnection();
-
-            /**
-             * memberentity_lineitementity
-             *   `MemberEntity_ID` bigint(20) NOT NULL,
-             *   `shoppingList_ID` bigint(20) NOT NULL,
-             */
+            Memberentity member = new Memberentity();
+            member.setId(memberId);
             
-            String stmt = "INSERT INTO memberentity_lineitementity "
-                    + "(MemberEntity_ID, shoppingList_ID)"
-                    + " VALUES "
-                    + "(?, ?)";
+            if (member.bindLineItemEntity(Long.parseLong(lineitementityId))) {
+                // Since we've binded the lineitementity to the member
+                return Response.ok("Successful Update!").build();
+            } else {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Something bad happened").build();
+            }
             
-            PreparedStatement ps = 
-                    conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, memberId);
-            ps.setLong(2, Long.parseLong(lineitementityId));
+//            Connection conn = DatabaseEngine.getConnection();
+//
+//            /**
+//             * memberentity_lineitementity
+//             *   `MemberEntity_ID` bigint(20) NOT NULL,
+//             *   `shoppingList_ID` bigint(20) NOT NULL,
+//             */
+//            
+//            String stmt = "INSERT INTO memberentity_lineitementity "
+//                    + "(MemberEntity_ID, shoppingList_ID)"
+//                    + " VALUES "
+//                    + "(?, ?)";
+//            
+//            PreparedStatement ps = 
+//                    conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
+//            ps.setLong(1, memberId);
+//            ps.setLong(2, Long.parseLong(lineitementityId));
+//            
+//            ps.executeUpdate();
+//            
+//            ps.close();
             
-            ps.executeUpdate();
-            
-            ps.close();
-            
-            return Response.ok("Successful Update!").build();
+//            return Response.ok("Successful Update!").build();
         } catch (Exception ex) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(ex.toString()).build();
