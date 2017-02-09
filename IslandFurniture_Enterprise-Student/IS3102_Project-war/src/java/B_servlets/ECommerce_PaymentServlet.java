@@ -160,7 +160,12 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     finalPrice, countryId);
             
             // Debugging Purposes Only
-            out.println(paymentRowResponse.getStatus());
+            //out.println(paymentRowResponse.getStatus());
+            if (paymentRowResponse.getStatus() == 200) {
+                out.println("Successful Sales Entity Row Creation");
+            } else {
+                out.println(paymentRowResponse.readEntity(String.class));
+            }
             
         } catch (Exception ex) {
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"

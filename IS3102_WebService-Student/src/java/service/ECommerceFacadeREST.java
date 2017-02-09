@@ -79,20 +79,33 @@ public class ECommerceFacadeREST {
                     + " VALUES "
                     + "(?, ?, ?)";
 
-            PreparedStatement ps = conn.prepareStatement(stmt);
+            // Auto Incremental Primary Key Retrieval
+            // http://stackoverflow.com/questions/7162989/sqlexception-generated-keys-not-requested-mysql
+            // Statement.RETURN_GENERATED_KEYS resolves the error below:
+            // java.sql.SQLException: Generated keys not requested. You need to specify Statement.RETURN_GENERATED_KEYS to Statement.executeUpdate() or Connection.prepareStatement(). 
+            PreparedStatement ps = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS);
             ps.setDouble(1, finalPrice);
             ps.setDouble(2, finalPrice);
             ps.setLong(3, Long.parseLong(memberId));
             
-            ps.executeQuery();
+            //ps.executeQuery();
+            
+            // executeUpdate() Resolves the error below:
+            // java.sql.SQLException: Can not issue data manipulation statements with executeQuery(). 
+            ps.executeUpdate();
+            
+            // Solves the error below?
+            // java.sql.SQLException: Can not issue data manipulation statements with executeQuery(). 
+          
             ResultSet rs = ps.getGeneratedKeys();
             rs.next();
             
             long recordId = rs.getLong(1);
             
-            return Response.ok(recordId).build();
+            return Response.ok(String.valueOf(recordId)).build();
         } catch (Exception ex) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(ex.toString()).build();
         }
     }
     
