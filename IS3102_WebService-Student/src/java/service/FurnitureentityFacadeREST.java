@@ -1,5 +1,6 @@
 package service;
 
+import Client.DatabaseEngine;
 import Entity.Furniture;
 import Entity.Furnitureentity;
 import java.sql.Connection;
@@ -93,7 +94,7 @@ public class FurnitureentityFacadeREST extends AbstractFacade<Furnitureentity> {
             List<Furniture> list = new ArrayList<>();
             String stmt = "";
             PreparedStatement ps;
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
+            Connection conn = DatabaseEngine.getConnection();
 
             if (countryID == null) {
                 stmt = "SELECT i.ID as id, i.NAME as name, f.IMAGEURL as imageURL, i.SKU as sku, i.DESCRIPTION as description, i.TYPE as type, i._LENGTH as length, i.WIDTH as width, i.HEIGHT as height, i.CATEGORY as category FROM itementity i, furnitureentity f where i.ID=f.ID and i.ISDELETED=FALSE;";
@@ -151,7 +152,7 @@ public class FurnitureentityFacadeREST extends AbstractFacade<Furnitureentity> {
             List<Furniture> list = new ArrayList<>();
             String stmt = "";
             PreparedStatement ps;
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
+            Connection conn = DatabaseEngine.getConnection();
 
             if (countryID == null) {
                 stmt = "SELECT i.ID as id, i.NAME as name, f.IMAGEURL as imageURL, i.SKU as sku, i.DESCRIPTION as description, i.TYPE as type, i._LENGTH as length, i.WIDTH as width, i.HEIGHT as height, i.CATEGORY as category FROM itementity i, furnitureentity f where i.ID=f.ID and i.ISDELETED=FALSE and i.CATEGORY=?;";

@@ -1,5 +1,6 @@
 package service;
 
+import Client.DatabaseEngine;
 import Entity.ShoppingCartLineItem;
 import java.net.URI;
 import java.sql.Connection;
@@ -11,6 +12,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -27,6 +30,9 @@ import javax.ws.rs.core.Response;
 public class ECommerceFacadeREST {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    @PersistenceContext(unitName = "WebService")
+    private EntityManager em;
+    
     @Context
     private UriInfo context;
 
@@ -59,8 +65,8 @@ public class ECommerceFacadeREST {
             @QueryParam("finalPrice") double finalPrice,
             @QueryParam("countryID") long countryId) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
-            
+            Connection conn = DatabaseEngine.getConnection();
+                    
             // Inserting a row with PreparedStatement
             // http://stackoverflow.com/questions/11804906/insert-row-into-database-with-preparedstatement
             /**
@@ -146,7 +152,7 @@ public class ECommerceFacadeREST {
          * `ITEM_ID` bigint(20) DEFAULT NULL,
          */
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
+            Connection conn = DatabaseEngine.getConnection();
             
             String stmt = "INSERT INTO lineitementity (QUANTITY, ITEM_ID)"
                     + " VALUES "

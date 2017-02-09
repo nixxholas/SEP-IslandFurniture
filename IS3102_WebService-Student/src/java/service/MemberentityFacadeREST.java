@@ -1,5 +1,6 @@
 package service;
 
+import Client.DatabaseEngine;
 import Entity.Itementity;
 import Entity.Lineitementity;
 import Entity.Member;
@@ -71,8 +72,8 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response addLineItem(String lineitementityId, @QueryParam("memberId") long memberId) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
-            
+            Connection conn = DatabaseEngine.getConnection();
+
             /**
              * memberentity_lineitementity
              *   `MemberEntity_ID` bigint(20) NOT NULL,
@@ -116,8 +117,8 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response updateMember(Member member, @QueryParam("password") String password) {
         try {            
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
-            
+            Connection conn = DatabaseEngine.getConnection();
+
             if (password != null) {
                 String passStmt = "SELECT PASSWORDSALT FROM memberentity m WHERE m.EMAIL=?";
                 PreparedStatement passPs = conn.prepareStatement(passStmt);
@@ -181,7 +182,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response getMember(@QueryParam("email") String email) {
     try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
+            Connection conn = DatabaseEngine.getConnection();
             String stmt = "SELECT * FROM Memberentity m WHERE m.EMAIL=?";
             PreparedStatement ps = conn.prepareStatement(stmt);
             ps.setString(1, email);
@@ -247,7 +248,7 @@ public class MemberentityFacadeREST extends AbstractFacade<Memberentity> {
     @Produces("application/json")
     public Response loginMember(@QueryParam("email") String email, @QueryParam("password") String password) {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/islandfurniture-it07?user=root&password=12345");
+            Connection conn = DatabaseEngine.getConnection();
             String stmt = "SELECT * FROM memberentity m WHERE m.EMAIL=?";
             PreparedStatement ps = conn.prepareStatement(stmt);
             ps.setString(1, email);

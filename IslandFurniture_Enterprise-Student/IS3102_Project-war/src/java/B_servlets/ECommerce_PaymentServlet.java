@@ -207,7 +207,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 
                 // Reset the shopping cart
                 session.setAttribute("shoppingCart",
-                        new ArrayList<ShoppingCartLineItem>());
+                        new ArrayList<>());
                 session.setAttribute("transactionId", salesRecordId);
                 
                 // Got to retrieve the shop information for collection
@@ -220,7 +220,6 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             }
             
         } catch (Exception ex) {
-            ex.printStackTrace();
             response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=" + ex.getMessage());
         }
