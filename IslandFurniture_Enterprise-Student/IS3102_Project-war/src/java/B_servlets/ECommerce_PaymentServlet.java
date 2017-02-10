@@ -185,7 +185,8 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 // Let's begin linking the shopping cart items to the sales record
                 for (ShoppingCartLineItem item : shoppingCart) {
                     // Insert the corresponding line item data to the DB
-                    Response itemRowResponse = removeQuantityFromItem(salesRecordId, item);
+                    Response itemRowResponse = 
+                            removeAndUpdateQuantityFromItem(salesRecordId, item);
                     
                     if (itemRowResponse.getStatus() != 200) {
                         response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
@@ -258,11 +259,11 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         return invocationBuilder.put(Entity.entity(String.valueOf(memberId), MediaType.APPLICATION_JSON));
     }
     
-    public Response removeQuantityFromItem(long salesRecordId, ShoppingCartLineItem item) {
+    public Response removeAndUpdateQuantityFromItem(long salesRecordId, ShoppingCartLineItem item) {
         Client client = ClientBuilder.newClient();
         WebTarget target = client
                 .target("http://localhost:8080/IS3102_WebService-Student/webresources/commerce")
-                .path("removeQuantityFromItemRecord")
+                .path("removeAndUpdateQuantityItemRecord")
                 .queryParam("salesRecordID", salesRecordId)
                 .queryParam("itemEntityID", item.getId())
                 .queryParam("quantity", item.getQuantity())
