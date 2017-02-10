@@ -133,9 +133,9 @@ public class ECommerceFacadeREST {
     }
     
     @PUT
-    @Path("removeQuantityFromItemRecord")
+    @Path("removeAndUpdateQuantityItemRecord")
     @Produces("application/json")
-    public Response removeQuantityFromItemRecord(
+    public Response removeAndUpdateQuantityItemRecord(
             @QueryParam("salesRecordID") long salesRecordId,
             @QueryParam("itemEntityID") long itemEntityId,
             @QueryParam("quantity") int quantity,

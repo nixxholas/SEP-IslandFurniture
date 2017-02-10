@@ -311,19 +311,6 @@ public class Itementity implements Serializable {
             ps.close();
             rs.close();
             
-            // We've got to remove the quantity that we took as well
-            String qtyStmt = "UPDATE li.* from "
-                    + "country_ecommerce c, warehouseentity w, "
-                    + "storagebinentity sb, storagebinentity_lineitementity sbli, "
-                    + "lineitementity li, itementity i where li.ITEM_ID=i.ID "
-                    + "and sbli.lineItems_ID=li.ID "
-                    + "and sb.ID=sbli.StorageBinEntity_ID "
-                    + "and w.id=sb.WAREHOUSE_ID and c.warehouseentity_id=w.id "
-                    + "and sb.type<>'Outbound' AND ITEM_ID=?";
-            
-            PreparedStatement pstmt = conn.prepareStatement(qtyStmt);
-            
-            
             return lineitementityId;
         } catch (SQLException ex) {
             System.out.println(ex.toString());
