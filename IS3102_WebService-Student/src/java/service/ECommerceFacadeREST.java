@@ -143,27 +143,27 @@ public class ECommerceFacadeREST {
         try {
             // Initialize the Lineitementity object first
             Itementity item = new Itementity(itemEntityId);
+            Lineitementity lineitem = new Lineitementity();
             
             if (item.deductAtDatabase(quantity)) {
-                return Response.status(Response.Status.OK)
-                        .entity("Done!").build();
+                // Move on since we've deducted the stocks
             } else {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("Unable to deduct from database").build();
             }
             
             // Then retrieve the primary key from the database after adding it
-            // lineitem.setId(item.addToDatabase(quantity));
+            lineitem.setId(item.addToDatabase(quantity));
             
             // Bind it with the salesrecordentity
-            //lineitem.addToSalesRecord(salesRecordId);
+            lineitem.addToSalesRecord(salesRecordId);
             
-            // if (lineitem.getId() > 0) {
-            //     return Response.ok(String.valueOf(lineitem.getId())).build();
-            // } else {
-            //     return Response.status(Response.Status.CONFLICT)
-            //             .entity(String.valueOf(lineitem.getId())).build();
-            // }
+             if (lineitem.getId() > 0) { // I'm just scared, so we'll check it again
+                 return Response.ok(String.valueOf(lineitem.getId())).build();
+             } else {
+                 return Response.status(Response.Status.CONFLICT)
+                         .entity(String.valueOf(lineitem.getId())).build();
+             }
         } catch (ClassNotFoundException | SQLException ex) {
              return Response.status(Response.Status.BAD_REQUEST)
                     .entity(ex.toString()).build();
