@@ -11,6 +11,8 @@ import Utils.LuhnAlgorithm;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -49,6 +51,15 @@ public class ECommerce_PaymentServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         PrintWriter out = response.getWriter();
+        String creditCardRegex = "^(?:4[0-9]{12}(?:[0-9]{3})?"
+                                + "|5[1-5][0-9]{14}"
+                                + "|6(?:011|5[0-9][0-9])[0-9]{12}"
+                                + "|3[47][0-9]{13}"
+                                + "|3(?:0[0-5]"
+                                + "|[68][0-9])[0-9]{11}"
+                                + "|(?:2131"
+                                + "|1800"
+                                + "|35\\d{3})\\d{11})$";
         
         try {
             // Debugging Purposes Only
@@ -59,7 +70,8 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             long cardNo;
             double finalPrice = 0.0;
             int securityCode;
-            int month, year;
+            int month = 0;
+            int year = 0;
             long memberId = 0;
             //String country = "";
             long countryId = 0;
@@ -70,6 +82,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Your session has expired, please login again.");
+                return;
             }
             
             // if (session.getAttribute("memberCountry") != null) {
@@ -92,6 +105,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Invalid Cart.");
+                return;
             }
             
             if (!"".equals(request.getParameter("txtName")) && 
@@ -100,6 +114,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Please enter a valid name.");
+                return;
             }
             
             if (!"".equals(request.getParameter("txtCardNo")) && 
@@ -107,7 +122,14 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     isNumeric(request.getParameter("txtCardNo"))) {
                 //if (LuhnAlgorithm.isValid(request.getParameter("txtCardNo"))) {
                     // It's a valid credit number, so we'll pass
-                    cardNo = Long.parseLong(request.getParameter("txtCardNo"));
+                if (Pattern.compile(creditCardRegex) 
+                        .matcher(request.getParameter("txtCardNo")).matches()) {
+                    cardNo = Long.parseLong(request.getParameter("txtCardNo")); 
+                } else {
+                    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                        + "?errMsg=Please enter a valid card number.");
+                    return;
+                }
                 //} else {
                 //    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                 //        + "?errMsg=Please enter a valid Card Number.");
@@ -115,14 +137,23 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Please enter a Card Number.");
+                return;
             }
             
             if (!"".equals(request.getParameter("txtSecuritycode")) &&
                     isNumeric(request.getParameter("txtSecuritycode"))) {
                 securityCode = Integer.parseInt(request.getParameter("txtSecuritycode"));
+                
+                if (!Pattern.compile("[0-9][0-9][0-9]") 
+                        .matcher(String.valueOf(securityCode)).matches()) {
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?errMsg=Please enter a valid CVV code.");
+                return;
+                }
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Please enter a valid CVV/CVV2.");
+                return;
             }
             
             if (isNumeric(request.getParameter("month"))) {
@@ -132,12 +163,14 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                 month = Integer.parseInt(request.getParameter("month"));
                 
                 if (month < 0 || month > 12) {
-                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                    + "?errMsg=Invalid Month Data.");
+                    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                        + "?errMsg=Invalid Month Data.");
+                    return;
                 }
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                    + "?errMsg=Invalid Month.");
+                    + "?errMsg=Invalid Credit Card Expiry Month.");
+                return;
             }
             
             if (!request.getParameter("year").equals("") && 
@@ -152,13 +185,31 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     // Else, it's bogus
                     response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                         + "?errMsg=Invalid Year Format (yyyy).");
+                    return;
                 }
                 
-                // Debugging Purposes Only
-                //out.println(year);
             } else {
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
-                    + "?errMsg=Invalid Year.");
+                    + "?errMsg=Invalid Credit Card Expiry Year.");
+                return;
+            }
+            
+            if (year >= Calendar.getInstance().get(Calendar.YEAR)) {
+                if (month > Calendar.getInstance().get(Calendar.MONTH)
+                        && year == Calendar.getInstance().get(Calendar.YEAR)) {
+                    // Month and year is valid if month is more and year is the
+                    // same
+                } else if (year > Calendar.getInstance().get(Calendar.YEAR)) {
+                    // Month and year is valid if the year is more
+                } else {
+                    response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                        + "?errMsg=Invalid Credit Card Expiry Month.");
+                    return;
+                }
+            } else {
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                    + "?errMsg=Invalid Credit Card Expiry Year.");
+                return;
             }
             
             // Collate finalPrice
@@ -226,14 +277,16 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                                 + storeInformation
                     );
                 } else {
-            response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
+                response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                     + "?errMsg=Unable to retrieve collection address information.");
+                    return;
                 }
 
             } else {
                 out.println(paymentRowResponse.readEntity(String.class));
                 response.sendRedirect("/IS3102_Project-war/B/SG/shoppingCart.jsp"
                         + "?errMsg=" + paymentRowResponse.readEntity(String.class));
+                return;
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
