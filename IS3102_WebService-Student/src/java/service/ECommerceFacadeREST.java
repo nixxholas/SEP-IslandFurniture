@@ -159,7 +159,8 @@ public class ECommerceFacadeREST {
             lineitem.addToSalesRecord(salesRecordId);
             
              if (lineitem.getId() > 0) { // I'm just scared, so we'll check it again
-                 return Response.ok(String.valueOf(lineitem.getId())).build();
+                 return Response.status(Response.Status.OK)
+                         .entity("Success! ").build();
              } else {
                  return Response.status(Response.Status.CONFLICT)
                          .entity(String.valueOf(lineitem.getId())).build();
