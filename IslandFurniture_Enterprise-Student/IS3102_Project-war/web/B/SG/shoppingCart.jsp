@@ -221,15 +221,15 @@
                                                                 <label>Card Number: </label>
                                                             </td>
                                                             <td style="padding: 5px">
-                                                                <input type="number" class="input-text text " title="cardno" name="txtCardNo" maxlength="19" required>
+                                                                <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="input-text text " title="cardno" name="txtCardNo" maxlength="19" required>
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td style="padding: 5px">
-                                                                <label>CVV/CVC2: </label>
+                                                                <label>CVV/CVV2: </label>
                                                             </td>
                                                             <td style="padding: 5px">
-                                                                <input type="number" class="input-text text " title="securitycode" name="txtSecuritycode" maxlength="4" required>
+                                                                <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="input-text text " title="securitycode" name="txtSecuritycode" maxlength="4" required>
                                                             </td>
                                                         </tr>
 
@@ -252,7 +252,7 @@
                                                                     <option value="11">November</option>
                                                                     <option value="12">December</option>
                                                                 </select>
-                                                                <input type="number" style="width: 60px" class="input-text text" title="year" name="year" maxlength="4" required>(eg: 2015)                                                        
+                                                                <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' style="width: 60px" class="input-text text" title="year" name="year" maxlength="4" required>(eg: 2015)                                                        
                                                             </td>
                                                         </tr>
                                                         <tr>
