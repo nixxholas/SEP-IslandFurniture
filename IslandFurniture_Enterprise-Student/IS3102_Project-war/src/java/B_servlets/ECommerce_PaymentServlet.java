@@ -60,6 +60,11 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                                 + "|(?:2131"
                                 + "|1800"
                                 + "|35\\d{3})\\d{11})$";
+        String assignmentCreditCardRegex = "^(4[0-9]{18}"
+                                            + "|4[0-9]{15}"
+                                            + "|4[0-9]{12}"
+                                            + "|5[1-5][0-9]{14}"
+                                            + "|2[2-7][0-9]{14}))$";
         
         try {
             // Debugging Purposes Only
@@ -122,7 +127,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                     isNumeric(request.getParameter("txtCardNo"))) {
                 //if (LuhnAlgorithm.isValid(request.getParameter("txtCardNo"))) {
                     // It's a valid credit number, so we'll pass
-                if (Pattern.compile(creditCardRegex) 
+                if (Pattern.compile(assignmentCreditCardRegex) 
                         .matcher(request.getParameter("txtCardNo")).matches()) {
                     cardNo = Long.parseLong(request.getParameter("txtCardNo")); 
                 } else {
