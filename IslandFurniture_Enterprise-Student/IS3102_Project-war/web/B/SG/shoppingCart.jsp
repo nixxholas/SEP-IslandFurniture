@@ -229,7 +229,7 @@
                                                                 <label>CVV/CVV2: </label>
                                                             </td>
                                                             <td style="padding: 5px">
-                                                                <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="input-text text " title="securitycode" name="txtSecuritycode" maxlength="4" required>
+                                                                <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57' class="input-text text " title="securitycode" name="txtSecuritycode" maxlength="3" required>
                                                             </td>
                                                         </tr>
 
