@@ -64,7 +64,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
                                             + "|4[0-9]{15}"
                                             + "|4[0-9]{12}"
                                             + "|5[1-5][0-9]{14}"
-                                            + "|2[2-7][0-9]{14}))$";
+                                            + "|2[2-7][0-9]{14})$";
         
         try {
             // Debugging Purposes Only
@@ -200,7 +200,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             }
             
             if (year >= Calendar.getInstance().get(Calendar.YEAR)) {
-                if (month > Calendar.getInstance().get(Calendar.MONTH)
+                if (month >= Calendar.getInstance().get(Calendar.MONTH)
                         && year == Calendar.getInstance().get(Calendar.YEAR)) {
                     // Month and year is valid if month is more and year is the
                     // same
