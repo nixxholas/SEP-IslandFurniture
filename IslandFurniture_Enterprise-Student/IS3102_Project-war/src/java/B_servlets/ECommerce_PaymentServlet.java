@@ -200,7 +200,7 @@ public class ECommerce_PaymentServlet extends HttpServlet {
             }
             
             if (year >= Calendar.getInstance().get(Calendar.YEAR)) {
-                if (month >= Calendar.getInstance().get(Calendar.MONTH)
+                if (month - 1 >= Calendar.getInstance().get(Calendar.MONTH)
                         && year == Calendar.getInstance().get(Calendar.YEAR)) {
                     // Month and year is valid if month is more and year is the
                     // same
